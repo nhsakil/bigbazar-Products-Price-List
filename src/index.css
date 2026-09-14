@@ -355,4 +355,22 @@ html {
 .admin-a11y .group-focus-within\:text-white {
   color: #ffffff;
 }
+
+/* ── Type Scale Normalization: Consolidate micro-fonts into standard text-xs (Issue 1) ── */
+.admin-a11y .text-\[8px\],
+.admin-a11y .text-\[9px\],
+.admin-a11y .text-\[10px\],
+.admin-a11y .text-\[11px\] {
+  font-size: 0.75rem !important; /* 12px */
+  line-height: 1rem !important;
+}
+
+/* ── Corner Radii Normalization: Consolidate non-standard radii into rounded-2xl (Issue 2) ── */
+.admin-a11y .rounded-\[40px\],
+.admin-a11y .rounded-\[32px\],
+.admin-a11y .rounded-\[24px\],
+.admin-a11y .rounded-3xl {
+  border-radius: 1rem !important; /* 16px */
+}
+
 

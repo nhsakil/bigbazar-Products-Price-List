@@ -34,10 +34,10 @@ const Navbar = ({ selectedCategory, onSelectCategory, onTrackOrder, onOpenCart, 
                             onClick={() => { handleCategoryClick('All'); navigate('/'); }}
                             className="inline-block text-left relative"
                         >
-                            <h1 className="text-xl md:text-3xl font-black italic tracking-tighter cursor-pointer select-none leading-none brand-logo">
+                            <span className="text-xl md:text-3xl font-black italic tracking-tighter cursor-pointer select-none leading-none brand-logo block">
                                 <span className="text-[#ce112d]">BIG</span>
                                 <span className="text-zinc-900 ml-1">BAZAR</span>
-                            </h1>
+                            </span>
                         </button>
                     </div>
 
@@ -89,17 +89,17 @@ const Navbar = ({ selectedCategory, onSelectCategory, onTrackOrder, onOpenCart, 
                             <span>{t('track')}</span>
                         </button>
 
-                        {/* Language Switcher — Standardized Segmented Control */}
+                        {/* Language Switcher — Standardized Pill Toggle */}
                         <div 
                             role="group" 
                             aria-label={language === 'bn' ? 'ভাষা নির্বাচন' : 'Language switcher'} 
-                            className="flex items-center bg-zinc-100 border border-zinc-200/80 rounded-xl p-0.5 h-10"
+                            className="flex items-center bg-zinc-100 border border-zinc-200/80 rounded-full p-1 h-9"
                         >
                             <button
                                 type="button"
                                 onClick={() => language !== 'en' && toggleLanguage()}
                                 aria-pressed={language === 'en'}
-                                className={`px-2.5 h-full rounded-lg text-xs font-bold transition-all ${
+                                className={`px-3 h-full rounded-full text-xs font-bold transition-all ${
                                     language === 'en' 
                                         ? 'bg-white text-zinc-900 shadow-sm' 
                                         : 'text-zinc-500 hover:text-zinc-800'
@@ -111,7 +111,7 @@ const Navbar = ({ selectedCategory, onSelectCategory, onTrackOrder, onOpenCart, 
                                 type="button"
                                 onClick={() => language !== 'bn' && toggleLanguage()}
                                 aria-pressed={language === 'bn'}
-                                className={`px-2.5 h-full rounded-lg text-xs font-bold transition-all ${
+                                className={`px-3 h-full rounded-full text-xs font-bold transition-all ${
                                     language === 'bn' 
                                         ? 'bg-[#ce112d] text-white shadow-sm' 
                                         : 'text-zinc-500 hover:text-zinc-800'

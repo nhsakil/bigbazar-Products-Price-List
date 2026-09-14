@@ -260,43 +260,10 @@ const Home = ({ selectedCategory, setSelectedCategory, searchQuery, onSearchChan
           </section>
         )}
 
-        {/* Search Bar (Elevated Affordance & Accessible Search Region) */}
-        <div id="search-section" className="max-w-md px-4 md:px-12" role="search">
-          <label htmlFor="home-product-search" className="sr-only">
-            {language === 'bn' ? 'পণ্য অনুসন্ধান' : 'Search products'}
-          </label>
-          <div className="relative group">
-            <Search 
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-[#ce112d] transition-colors" 
-              size={18} 
-              aria-hidden="true" 
-            />
-            <input
-              id="home-product-search"
-              type="search"
-              value={searchQuery}
-              onChange={(e) => onSearchChange(e.target.value)}
-              placeholder={language === 'bn' ? 'পণ্য খুঁজুন...' : 'Search products...'}
-              aria-label={language === 'bn' ? 'পণ্য খুঁজুন' : 'Search products'}
-              className="w-full bg-zinc-50 border border-zinc-200/90 focus:border-[#ce112d] focus:bg-white rounded-xl py-3.5 pl-12 pr-10 text-sm font-medium outline-none transition-all shadow-sm"
-            />
-            {searchQuery && (
-              <button
-                type="button"
-                onClick={() => onSearchChange('')}
-                aria-label={language === 'bn' ? 'অনুসন্ধান মুছুন' : 'Clear search'}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-700 p-1 rounded-full hover:bg-zinc-100 transition-colors"
-              >
-                <X size={15} />
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* Product Grid */}
-        <section className="space-y-8 pt-4 px-4 md:px-12">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <div className="space-y-2">
+        {/* Product Grid Section */}
+        <section className="space-y-8 pt-2 px-4 md:px-12">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-zinc-100">
+            <div className="space-y-1">
               <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight leading-none text-zinc-900">
                 {searchQuery 
                   ? (language === 'bn' ? 'অনুসন্ধান ফলাফল' : 'Search Results') 
@@ -307,6 +274,37 @@ const Home = ({ selectedCategory, setSelectedCategory, searchQuery, onSearchChan
                 <p className="text-xs text-zinc-500 font-bold">
                   {language === 'bn' ? `"${searchQuery}" এর জন্য অনুসন্ধান করা হচ্ছে` : `Showing results for "${searchQuery}"`}
                 </p>
+              )}
+            </div>
+
+            {/* Seamlessly Integrated Search Bar */}
+            <div className="relative group w-full sm:w-72 md:w-80" role="search">
+              <label htmlFor="home-product-search" className="sr-only">
+                {language === 'bn' ? 'পণ্য অনুসন্ধান' : 'Search products'}
+              </label>
+              <Search 
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-[#ce112d] transition-colors" 
+                size={16} 
+                aria-hidden="true" 
+              />
+              <input
+                id="home-product-search"
+                type="search"
+                value={searchQuery}
+                onChange={(e) => onSearchChange(e.target.value)}
+                placeholder={language === 'bn' ? 'পণ্য খুঁজুন...' : 'Search products...'}
+                aria-label={language === 'bn' ? 'পণ্য খুঁজুন' : 'Search products'}
+                className="w-full bg-zinc-50 border border-zinc-200/90 focus:border-[#ce112d] focus:bg-white rounded-xl py-2.5 pl-10 pr-9 text-sm outline-none transition-all shadow-sm"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => onSearchChange('')}
+                  aria-label={language === 'bn' ? 'অনুসন্ধান মুছুন' : 'Clear search'}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-700 p-0.5 rounded-full hover:bg-zinc-100 transition-colors"
+                >
+                  <X size={14} />
+                </button>
               )}
             </div>
           </div>
@@ -346,7 +344,7 @@ const Home = ({ selectedCategory, setSelectedCategory, searchQuery, onSearchChan
                   if (setSelectedCategory) setSelectedCategory('All');
                   if (onSearchChange) onSearchChange('');
                 }}
-                className="mt-2 px-8 py-3.5 bg-[#ce112d] hover:bg-[#b00e26] text-white text-xs font-black uppercase tracking-wider rounded-2xl shadow-xl shadow-red-900/30 active:scale-95 transition-all flex items-center gap-2"
+                className="mt-2 px-8 py-3 bg-[#ce112d] hover:bg-[#b00e26] text-white text-xs font-black uppercase tracking-wider rounded-xl shadow-md active:scale-95 transition-all flex items-center gap-2"
               >
                 <span>{language === 'bn' ? 'সকল পণ্য দেখুন' : 'Explore All Collections'}</span>
               </button>
@@ -362,17 +360,14 @@ const Home = ({ selectedCategory, setSelectedCategory, searchQuery, onSearchChan
 
           {/* Load More */}
           {hasMore && !loading && (
-            <div className="flex flex-col items-center justify-center pt-12 pb-6 gap-3">
+            <div className="flex flex-col items-center justify-center pt-10 pb-4">
               <button
                 onClick={() => setPage(prev => prev + 1)}
-                className="group inline-flex items-center gap-3 px-8 py-3.5 bg-zinc-900 hover:bg-[#ce112d] text-white rounded-xl shadow-lg hover:shadow-red-900/25 active:scale-95 transition-all duration-300 border border-white/10 text-sm font-bold tracking-wide"
+                className="group inline-flex items-center gap-2.5 px-8 py-3 bg-zinc-900 hover:bg-[#ce112d] text-white rounded-xl shadow-md hover:shadow-red-900/25 active:scale-95 transition-all duration-300 text-xs font-black uppercase tracking-wider"
               >
                 <span>{language === 'bn' ? 'আরো পণ্য দেখুন' : 'Explore More Designs'}</span>
-                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
               </button>
-              <span className="text-xs text-zinc-500 font-medium tracking-normal">
-                {language === 'bn' ? 'প্রিমিয়াম কালেকশন • ট্রেন্ডিং ডিজাইন' : 'Selective Edits • Premium Catalog'}
-              </span>
             </div>
           )}
         </section>

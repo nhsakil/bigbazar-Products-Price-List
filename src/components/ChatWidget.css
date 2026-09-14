@@ -53,11 +53,11 @@
   box-shadow: 0 14px 36px -8px rgba(206, 17, 45, 0.18), 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-/* Clear the fixed bottom tab bar on every hamburger layout (below lg) */
+/* Standard bottom-right placement across mobile & tablet */
 @media (max-width: 1023px) {
   .chat-widget-fab {
-    bottom: 74px;
-    right: 12px;
+    bottom: 16px;
+    right: 16px;
   }
 }
 

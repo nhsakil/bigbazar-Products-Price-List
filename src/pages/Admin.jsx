@@ -1234,7 +1234,7 @@ ${order.customer_note ? `Note: ${order.customer_note}` : ''}`.trim();
                 className={`w-full flex items-center gap-3.5 p-3.5 rounded-2xl text-[11px] font-bold tracking-wider transition-all duration-300 ${tab.special && activeTab !== tab.id ? 'border-2 border-dashed border-[#ce112d]/40 text-[#ce112d] hover:bg-[#ce112d]/10 hover:border-[#ce112d]' : activeTab === tab.id ? 'bg-gradient-to-r from-[#ce112d] to-[#ff1c3a] text-white shadow-xl shadow-red-900/30 ring-1 ring-white/10' : 'hover:bg-white/[0.03] text-zinc-400 hover:text-zinc-200'}`}
               >
                 <div className={`${activeTab === tab.id ? 'text-white' : 'text-zinc-500 group-hover:text-white'}`}>{tab.icon}</div>
-                <span className="uppercase">{tab.label}</span>
+                <span className="font-semibold text-xs tracking-normal">{tab.label}</span>
                 {tab.count > 0 && (
                   <span className={`ml-auto text-[10px] min-w-[20px] h-5 flex items-center justify-center rounded-full px-1.5 font-bold ${activeTab === tab.id ? 'bg-white/20 text-white' : 'bg-zinc-900 text-zinc-400'}`}>{tab.count}</span>
                 )}
@@ -2235,13 +2235,13 @@ ${order.customer_note ? `Note: ${order.customer_note}` : ''}`.trim();
         ) : activeTab === 'add' ? (
           <form onSubmit={handleProductSubmit} className="max-w-5xl space-y-6 md:space-y-12 pb-24 mx-auto">
             {/* Form Header */}
-            <div className="bg-zinc-900/80 p-4 md:p-8 rounded-2xl md:rounded-[40px] border border-white/5 backdrop-blur-xl sticky top-0 lg:top-0 z-30 shadow-2xl">
+            <div className="bg-zinc-900/80 p-6 md:p-8 rounded-2xl border border-white/5 backdrop-blur-xl sticky top-0 lg:top-0 z-30 shadow-2xl">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-xl md:text-3xl font-black uppercase tracking-tight text-white line-clamp-1">
                     {editingProduct ? 'Update' : 'Add'} <span className="text-[#ce112d]">Product</span>
                   </h2>
-                  <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em] mt-1">
+                  <p className="text-xs font-semibold text-zinc-400 mt-1">
                     Photo required · Instagram URL = video only
                   </p>
                 </div>
@@ -2278,7 +2278,7 @@ ${order.customer_note ? `Note: ${order.customer_note}` : ''}`.trim();
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
                 {/* Left Column: Basic Info */}
                 <div className="lg:col-span-12 space-y-8">
-                  <div className="bg-zinc-900 border border-white/5 rounded-2xl md:rounded-[40px] p-4 md:p-10 shadow-2xl space-y-6 md:space-y-10">
+                  <div className="bg-zinc-900 border border-white/5 rounded-2xl p-6 md:p-8 shadow-2xl space-y-6 md:space-y-8">
                     <div className="space-y-6">
                       <div className="group">
                         <div className="flex items-center justify-between mb-3 px-1">
@@ -2352,12 +2352,12 @@ ${order.customer_note ? `Note: ${order.customer_note}` : ''}`.trim();
                         {/* Top-Level Category Dropdown */}
                         <div className="space-y-3">
                           <div className="flex items-center justify-between">
-                            <label className="text-[10px] font-black uppercase text-zinc-500 block tracking-[0.2em] px-1">Top-Level Category (প্রধান ক্যাটাগরি)</label>
+                            <label className="text-xs font-bold uppercase text-zinc-400 block tracking-wider px-1">Top-Level Category (প্রধান ক্যাটাগরি)</label>
                             {form.category && (
                               <button
                                 type="button"
                                 onClick={() => setForm(prev => ({ ...prev, category: '', subcategory: '' }))}
-                                className="text-[10px] font-bold text-red-400 hover:underline"
+                                className="inline-flex items-center gap-1 text-xs font-semibold text-zinc-400 hover:text-white bg-zinc-800/80 hover:bg-zinc-700 px-2.5 py-1 rounded-lg transition-colors"
                               >
                                 Clear Category
                               </button>
@@ -2389,12 +2389,12 @@ ${order.customer_note ? `Note: ${order.customer_note}` : ''}`.trim();
                         {form.category && (
                           <div className="pt-2 space-y-3">
                             <div className="flex items-center justify-between">
-                              <label className="text-[10px] font-black uppercase text-rose-400 block tracking-[0.2em] px-1">Subcategory / Garment Type (সাব-ক্যাটাগরি / পোশাকের ধরন)</label>
+                              <label className="text-xs font-bold uppercase text-rose-400 block tracking-wider px-1">Subcategory / Garment Type (সাব-ক্যাটাগরি / পোশাকের ধরন)</label>
                               {form.subcategory && (
                                 <button
                                   type="button"
                                   onClick={() => setForm(prev => ({ ...prev, subcategory: '' }))}
-                                  className="text-[10px] font-bold text-rose-400 hover:underline"
+                                  className="inline-flex items-center gap-1 text-xs font-semibold text-zinc-400 hover:text-white bg-zinc-800/80 hover:bg-zinc-700 px-2.5 py-1 rounded-lg transition-colors"
                                 >
                                   Clear Subcategory
                                 </button>
@@ -2457,8 +2457,8 @@ ${order.customer_note ? `Note: ${order.customer_note}` : ''}`.trim();
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                   <div className="space-y-6">
                     <div className="group">
-                      <label className="text-[10px] font-black uppercase text-zinc-500 mb-2 block tracking-[0.15em] px-1">
-                        Instagram video URL <span className="text-zinc-600 normal-case tracking-normal font-semibold">(optional · video only)</span>
+                      <label className="text-xs font-bold uppercase text-zinc-400 mb-2 block tracking-wider px-1">
+                        Instagram video URL <span className="text-xs text-zinc-400 normal-case tracking-normal font-normal">(optional · video only)</span>
                       </label>
                       <div className="relative">
                         <input
@@ -2518,7 +2518,7 @@ ${order.customer_note ? `Note: ${order.customer_note}` : ''}`.trim();
                       ) : (
                         <div className="w-full h-full flex flex-col items-center justify-center gap-3 text-zinc-700 bg-black/40 px-6 text-center">
                           <ImageIcon size={28} className="opacity-40" />
-                          <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-600">Upload a photo to preview</p>
+                          <p className="text-xs font-semibold text-zinc-400 tracking-normal">Upload a photo to preview</p>
                         </div>
                       )}
                     </div>
@@ -2589,14 +2589,11 @@ ${order.customer_note ? `Note: ${order.customer_note}` : ''}`.trim();
 
             {/* LOGISTICS & VARIANTS */}
             <div className="space-y-10">
-              <div className="bg-zinc-900 border border-white/5 rounded-2xl md:rounded-[40px] p-4 md:p-10 shadow-2xl space-y-8 md:space-y-12">
+              <div className="bg-zinc-900 border border-white/5 rounded-2xl p-6 md:p-8 shadow-2xl space-y-8">
                 <div className="space-y-8">
-                  <div className="flex items-center gap-4 border-b border-white/5 pb-6">
-                    <div className="w-3 h-10 bg-[#ce112d] rounded-full shadow-[0_0_20px_rgba(206,17,45,0.4)]"></div>
-                    <div>
-                      <h3 className="text-lg md:text-2xl font-black uppercase tracking-tight text-white italic">Sizes & Colors</h3>
-                      <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest mt-1">Select available sizes, then add colors</p>
-                    </div>
+                  <div className="border-b border-white/5 pb-6">
+                    <h3 className="text-lg md:text-2xl font-black uppercase tracking-tight text-white italic">Sizes & Colors</h3>
+                    <p className="text-xs font-semibold text-zinc-400 mt-1">Select available sizes, then add colors</p>
                   </div>
 
                   <div className="space-y-8">
@@ -2761,8 +2758,8 @@ ${order.customer_note ? `Note: ${order.customer_note}` : ''}`.trim();
                           const swatches = PRESET_SWATCHES.filter(group.filter);
                           if (swatches.length === 0) return null;
                           return (
-                            <div key={group.label} className="space-y-2">
-                              <span className="text-[9px] font-bold uppercase text-zinc-600 tracking-widest">{group.label}</span>
+                            <div key={group.label} className="space-y-2.5 p-3 rounded-xl bg-black/20 border border-white/5">
+                              <span className="inline-block text-xs font-bold uppercase text-zinc-300 tracking-wider px-2 py-0.5 rounded-md bg-zinc-800/80">{group.label}</span>
                               <div className="flex flex-wrap gap-2 md:gap-2.5">
                                 {swatches.map((swatch, sIdx) => {
                                   const isSelected = form._newColorHex === swatch.hex;
@@ -2778,7 +2775,7 @@ ${order.customer_note ? `Note: ${order.customer_note}` : ''}`.trim();
                                       <div
                                         className={`w-10 h-10 md:w-11 md:h-11 rounded-xl shadow-lg transition-all ${
                                           isSelected
-                                            ? 'ring-2 ring-[#ce112d] ring-offset-2 ring-offset-zinc-950 scale-110'
+                                            ? 'ring-2 ring-emerald-500 ring-offset-2 ring-offset-zinc-950 scale-110'
                                             : 'border-2 border-white/10 hover:border-white/40 group-hover/swatch:scale-110'
                                         }`}
                                         style={{ backgroundColor: swatch.hex }}
@@ -2789,7 +2786,7 @@ ${order.customer_note ? `Note: ${order.customer_note}` : ''}`.trim();
                                           </div>
                                         )}
                                       </div>
-                                      <span className={`text-[8px] font-bold uppercase tracking-wide leading-none ${isSelected ? 'text-white' : 'text-zinc-600'}`}>
+                                      <span className={`text-[10px] font-medium tracking-wide leading-none ${isSelected ? 'text-white' : 'text-zinc-400'}`}>
                                         {swatch.en.length > 8 ? swatch.en.slice(0, 7) + '…' : swatch.en}
                                       </span>
                                     </button>
@@ -2802,7 +2799,7 @@ ${order.customer_note ? `Note: ${order.customer_note}` : ''}`.trim();
 
                         {/* Custom Input + Preview */}
                         <div className="pt-2 border-t border-white/5 space-y-3">
-                          <span className="text-[9px] font-bold uppercase text-zinc-600 tracking-widest">Custom / Selected Color</span>
+                          <span className="text-xs font-bold uppercase text-zinc-400 tracking-wider">Custom / Selected Color</span>
                           <div className="flex gap-3 items-stretch">
                             {/* Color Preview + Native Picker */}
                             <label className="relative w-14 h-14 shrink-0 cursor-pointer rounded-2xl border-2 border-white/15 shadow-xl overflow-hidden transition-all hover:scale-105 hover:border-white/30" style={{ backgroundColor: form._newColorHex || '#888888' }}>
@@ -3068,23 +3065,31 @@ ${order.customer_note ? `Note: ${order.customer_note}` : ''}`.trim();
                 )}
               </div>
 
-              {/* Submit & Discard */}
-              <div className="flex flex-col gap-4 pt-10">
-                <button type="submit" disabled={loading} className="w-full bg-[#ce112d] h-16 md:h-20 rounded-2xl md:rounded-[32px] font-black uppercase tracking-[0.15em] md:tracking-[0.2em] text-sm md:text-base text-white shadow-2xl shadow-red-900/40 hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-3 md:gap-4 disabled:opacity-50">
-                  {loading ? <RotateCcw size={22} className="animate-spin" /> : <Save size={22} />}
-                  <span>{loading ? 'Saving...' : (editingProduct ? 'Update Product' : 'Save Product')}</span>
-                </button>
-                <button type="button" onClick={cancelEdit} className="w-full h-14 md:h-16 border-2 border-zinc-800 rounded-2xl md:rounded-[32px] uppercase text-[11px] md:text-xs font-bold tracking-[0.15em] md:tracking-[0.2em] text-zinc-500 hover:text-red-500 hover:border-red-900/50 hover:bg-red-950/50 transition-all active:scale-[0.98]">
+              {/* Submit & Discard — Standardized Height, Proportional Width & Conventional Action Color */}
+              <div className="flex flex-col sm:flex-row items-center justify-end gap-4 pt-8 border-t border-white/5">
+                <button 
+                  type="button" 
+                  onClick={cancelEdit} 
+                  className="w-full sm:w-44 h-12 md:h-14 border border-zinc-800 rounded-xl uppercase text-xs font-bold tracking-wider text-zinc-400 hover:text-white hover:bg-zinc-800/80 transition-all active:scale-[0.98]"
+                >
                   Discard
+                </button>
+                <button 
+                  type="submit" 
+                  disabled={loading} 
+                  className="w-full sm:w-60 bg-emerald-600 hover:bg-emerald-500 h-12 md:h-14 rounded-xl font-bold uppercase tracking-wider text-xs md:text-sm text-white shadow-xl shadow-emerald-950/50 hover:brightness-105 active:scale-[0.98] transition-all flex items-center justify-center gap-2.5 disabled:opacity-50"
+                >
+                  {loading ? <RotateCcw size={18} className="animate-spin" /> : <Save size={18} />}
+                  <span>{loading ? 'Saving...' : (editingProduct ? 'Update Product' : 'Save Product')}</span>
                 </button>
               </div>
 
               {/* Mobile Sticky Save Action Bar */}
               <div className="fixed bottom-0 left-0 right-0 p-3 bg-zinc-950/95 border-t border-white/10 backdrop-blur-xl z-50 lg:hidden flex items-center gap-3 shadow-2xl">
-                <button type="button" onClick={cancelEdit} className="px-4 h-12 border border-zinc-800 rounded-xl text-[10px] font-black uppercase tracking-wider text-zinc-400">
+                <button type="button" onClick={cancelEdit} className="px-5 h-12 border border-zinc-800 rounded-xl text-xs font-bold uppercase tracking-wider text-zinc-400 hover:bg-zinc-800">
                   Discard
                 </button>
-                <button type="submit" disabled={loading} className="flex-1 bg-[#ce112d] h-12 rounded-xl font-black uppercase text-xs text-white tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-red-900/50 disabled:opacity-50">
+                <button type="submit" disabled={loading} className="flex-1 bg-emerald-600 hover:bg-emerald-500 h-12 rounded-xl font-bold uppercase text-xs text-white tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-emerald-950/50 disabled:opacity-50">
                   {loading ? <RotateCcw size={16} className="animate-spin" /> : <Save size={16} />}
                   <span>{loading ? 'Saving...' : (editingProduct ? 'Update Product' : 'Save Product')}</span>
                 </button>
