@@ -4,7 +4,7 @@
 
 :root {
   font-family: 'Inter', 'Noto Sans Bengali', system-ui, -apple-system, sans-serif;
-  font-size: 15px; /* Base 14-16px */
+  font-size: 16px; /* Standard accessible base (1rem = 16px, text-xs = 12px) */
   font-weight: 400; /* Regular base weight */
   line-height: 1.65; /* Bengali script breathing room */
   letter-spacing: -0.01em;
@@ -189,6 +189,80 @@ html {
   .smooth-transition {
     transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
+
+  /* Cohesive Button Design System */
+  .btn-base {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    transition: all 0.2s ease-in-out;
+    outline: none;
+    user-select: none;
+  }
+  .btn-base:active {
+    transform: scale(0.96);
+  }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    background-color: #ce112d;
+    color: #ffffff;
+    font-size: 0.875rem;
+    font-weight: 800;
+    box-shadow: 0 4px 14px 0 rgba(206, 17, 45, 0.25);
+    transition: all 0.2s ease;
+  }
+  .btn-primary:hover {
+    background-color: #b00e26;
+  }
+  .btn-primary:active {
+    transform: scale(0.96);
+  }
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    background-color: #18181b;
+    color: #ffffff;
+    font-size: 0.875rem;
+    font-weight: 800;
+    transition: all 0.2s ease;
+  }
+  .btn-secondary:hover {
+    background-color: #ce112d;
+  }
+  .btn-secondary:active {
+    transform: scale(0.96);
+  }
+  .btn-subtle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.75rem;
+    background-color: #f4f4f5;
+    color: #3f3f46;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    transition: all 0.2s ease;
+  }
+  .btn-subtle:hover {
+    background-color: #e4e4e7;
+    color: #18181b;
+  }
+  .btn-subtle:active {
+    transform: scale(0.96);
+  }
 }
 
 /* Antigravity Global Styles */
@@ -239,4 +313,46 @@ html {
 
 .animate-marquee:hover {
   animation-play-state: paused;
-}
+}
+
+/* ═══════════════════════════════════════════════
+   WCAG 2.2 AA Admin Dashboard Contrast Overrides
+   Fixes ~60 insufficient contrast issues where
+   Tailwind zinc-500 (#71717a, 4.09:1) and zinc-600
+   (#52525b, 2.49:1) fail against bg-[#0a0a0c].
+   Override to zinc-400 (#a1a1aa, 5.4:1 — Pass AA).
+   ═══════════════════════════════════════════════ */
+
+/* ── Labels & Help Text: zinc-500 → zinc-400 ── */
+.admin-a11y .text-zinc-500 {
+  color: #a1a1aa;
+}
+
+/* ── Decorative / Secondary Text: zinc-600 → zinc-400 ── */
+.admin-a11y .text-zinc-600 {
+  color: #a1a1aa;
+}
+
+/* Preserve hover/focus/active state behavior */
+.admin-a11y .hover\:text-zinc-200:hover {
+  color: #e4e4e7;
+}
+.admin-a11y .hover\:text-white:hover {
+  color: #ffffff;
+}
+.admin-a11y .hover\:text-red-500:hover,
+.admin-a11y .hover\:text-red-400:hover {
+  color: #f87171;
+}
+.admin-a11y .group-hover\:text-white:hover {
+  color: #ffffff;
+}
+
+/* Preserve group-focus-within overrides */
+.admin-a11y .group-focus-within\:text-\[\#ce112d\] {
+  color: #ce112d;
+}
+.admin-a11y .group-focus-within\:text-white {
+  color: #ffffff;
+}
+

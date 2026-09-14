@@ -32,10 +32,23 @@ export const ProductCard = ({ product, onClick }) => {
 
   const showImage = sourceImage && !imgFailed;
 
+  const displayName = language === 'bn' 
+    ? (product.name_bn || product.name) 
+    : (product.name_en || product.name);
+
   return (
     <div
+      role="button"
+      tabIndex={0}
+      aria-label={`${displayName} - ৳${price}`}
       onClick={() => onClick(product)}
-      className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-neutral-100 cursor-pointer group flex flex-col h-full"
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick(product);
+        }
+      }}
+      className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-neutral-100 cursor-pointer group flex flex-col h-full focus:outline-none focus:ring-2 focus:ring-[#ce112d]/40"
     >
       <div className="relative aspect-[4/5] overflow-hidden bg-neutral-50 shrink-0">
         {showImage ? (
@@ -43,7 +56,7 @@ export const ProductCard = ({ product, onClick }) => {
             <img
               src={getOptimizedUrl(sourceImage, mediaSizes.thumbnail)}
               className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500 ease-out"
-              alt={product.name}
+              alt={displayName}
               loading="lazy"
               decoding="async"
               onError={(e) => {
@@ -91,21 +104,27 @@ export const ProductCard = ({ product, onClick }) => {
       
       <div className="p-3.5 md:p-5 flex flex-col flex-1 gap-3">
         <div className="space-y-1">
-          <p className="text-[9px] md:text-[10px] font-bold uppercase text-neutral-400 tracking-wider truncate">
+          <p className="text-[10px] md:text-xs font-bold uppercase text-neutral-400 tracking-wider truncate">
             {product.category || 'Clothing'}
           </p>
-          <h4 className="text-sm md:text-base font-bold text-neutral-800 line-clamp-2 leading-tight min-h-[40px] capitalize">{product.name}</h4>
+          <h3 className="text-sm md:text-base font-bold text-neutral-900 line-clamp-2 leading-snug min-h-[40px]">
+            {displayName}
+          </h3>
         </div>
         
         <div className="mt-auto flex items-center justify-between gap-1.5 pt-1 min-w-0">
           <div className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5 min-w-0 overflow-hidden">
             <span className="text-sm sm:text-base md:text-lg font-black text-[#ce112d] whitespace-nowrap">৳{price}</span>
             {hasDiscount && (
-              <span className="text-[10px] sm:text-[11px] text-neutral-400 line-through font-semibold whitespace-nowrap">৳{originalPrice}</span>
+              <span className="text-xs text-neutral-400 line-through font-semibold whitespace-nowrap">৳{originalPrice}</span>
             )}
           </div>
-          <div className="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 rounded-xl bg-neutral-50 flex items-center justify-center text-neutral-400 group-hover:bg-[#ce112d] group-hover:text-white transition-all shadow-sm shrink-0">
-            <ArrowRight size={14} className="sm:w-4 sm:h-4" strokeWidth={2.5} />
+          {/* Interaction Signifier — Accessible touch target & high clarity */}
+          <div 
+            aria-hidden="true"
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-zinc-100 flex items-center justify-center text-zinc-500 group-hover:bg-[#ce112d] group-hover:text-white transition-all shadow-sm shrink-0"
+          >
+            <ArrowRight size={16} strokeWidth={2.5} className="group-hover:translate-x-0.5 transition-transform" />
           </div>
         </div>
       </div>

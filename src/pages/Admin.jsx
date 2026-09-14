@@ -1175,7 +1175,7 @@ ${order.customer_note ? `Note: ${order.customer_note}` : ''}`.trim();
   );
 
   return (
-    <div className="min-h-screen bg-[#0a0a0c] text-[#e4e4e7] flex flex-col lg:flex-row font-sans selection:bg-[#ce112d]/30">
+    <div className="admin-a11y min-h-screen bg-[#0a0a0c] text-[#e4e4e7] flex flex-col lg:flex-row font-sans selection:bg-[#ce112d]/30">
       {/* Mobile Top Bar */}
       <div className="lg:hidden flex items-center justify-between p-4 bg-zinc-950 border-b border-white/5 sticky top-0 z-[60] backdrop-blur-xl">
         <div className="flex items-center gap-2">
@@ -1231,12 +1231,12 @@ ${order.customer_note ? `Note: ${order.customer_note}` : ''}`.trim();
                     if (tab.id === 'settings') fetchPendingCodes();
                   }
                 }}
-                className={`w-full flex items-center gap-3.5 p-3.5 rounded-2xl text-[11px] font-bold tracking-wider transition-all duration-300 ${tab.special && activeTab !== tab.id ? 'border-2 border-dashed border-[#ce112d]/40 text-[#ce112d] hover:bg-[#ce112d]/10 hover:border-[#ce112d]' : activeTab === tab.id ? 'bg-gradient-to-r from-[#ce112d] to-[#ff1c3a] text-white shadow-xl shadow-red-900/30 ring-1 ring-white/10' : 'hover:bg-white/[0.03] text-zinc-500 hover:text-zinc-200'}`}
+                className={`w-full flex items-center gap-3.5 p-3.5 rounded-2xl text-[11px] font-bold tracking-wider transition-all duration-300 ${tab.special && activeTab !== tab.id ? 'border-2 border-dashed border-[#ce112d]/40 text-[#ce112d] hover:bg-[#ce112d]/10 hover:border-[#ce112d]' : activeTab === tab.id ? 'bg-gradient-to-r from-[#ce112d] to-[#ff1c3a] text-white shadow-xl shadow-red-900/30 ring-1 ring-white/10' : 'hover:bg-white/[0.03] text-zinc-400 hover:text-zinc-200'}`}
               >
-                <div className={`${activeTab === tab.id ? 'text-white' : 'text-zinc-600 group-hover:text-white'}`}>{tab.icon}</div>
+                <div className={`${activeTab === tab.id ? 'text-white' : 'text-zinc-500 group-hover:text-white'}`}>{tab.icon}</div>
                 <span className="uppercase">{tab.label}</span>
                 {tab.count > 0 && (
-                  <span className={`ml-auto text-[10px] min-w-[20px] h-5 flex items-center justify-center rounded-full px-1.5 font-bold ${activeTab === tab.id ? 'bg-white/20 text-white' : 'bg-zinc-900 text-zinc-500'}`}>{tab.count}</span>
+                  <span className={`ml-auto text-[10px] min-w-[20px] h-5 flex items-center justify-center rounded-full px-1.5 font-bold ${activeTab === tab.id ? 'bg-white/20 text-white' : 'bg-zinc-900 text-zinc-400'}`}>{tab.count}</span>
                 )}
               </button>
             ))}
@@ -1251,7 +1251,7 @@ ${order.customer_note ? `Note: ${order.customer_note}` : ''}`.trim();
               fetchReviews();
             }}
             disabled={loading}
-            className="w-full flex items-center gap-3 p-4 text-zinc-500 hover:text-white transition-all rounded-2xl hover:bg-white/5 text-xs font-semibold"
+            className="w-full flex items-center gap-3 p-4 text-zinc-400 hover:text-white transition-all rounded-2xl hover:bg-white/5 text-xs font-semibold"
           >
             <RotateCcw size={16} className={loading ? "animate-spin" : ""} /> {loading ? "Refreshing..." : "Refresh Data"}
           </button>
@@ -1261,7 +1261,7 @@ ${order.customer_note ? `Note: ${order.customer_note}` : ''}`.trim();
               bigBazarApi.auth.signOut();
               setIsMobileMenuOpen(false);
             }}
-            className="w-full flex items-center gap-3 p-4 text-zinc-700 hover:text-red-500 transition-all rounded-2xl hover:bg-white/5 text-xs font-semibold"
+            className="w-full flex items-center gap-3 p-4 text-zinc-400 hover:text-red-400 transition-all rounded-2xl hover:bg-white/5 text-xs font-semibold"
           >
             <LogOut size={16} /> Logout
           </button>
@@ -2310,7 +2310,7 @@ ${order.customer_note ? `Note: ${order.customer_note}` : ''}`.trim();
                         <div className="group">
                           <label className="text-[10px] font-black uppercase text-zinc-500 mb-2 md:mb-3 block tracking-[0.15em] md:tracking-[0.2em] px-1">Original Price</label>
                           <div className="relative">
-                            <span className="absolute left-3 md:left-5 top-1/2 -translate-y-1/2 text-zinc-600 font-black text-base md:text-xl italic">৳</span>
+                            <span className="absolute left-3 md:left-5 top-1/2 -translate-y-1/2 text-zinc-400 font-black text-base md:text-xl italic">৳</span>
                             <input
                               type="number"
                               value={form.original_price || ''}
@@ -2321,9 +2321,9 @@ ${order.customer_note ? `Note: ${order.customer_note}` : ''}`.trim();
                           </div>
                         </div>
                         <div className="group">
-                          <label className="text-[10px] font-black uppercase text-[#ce112d] mb-2 md:mb-3 block tracking-[0.15em] md:tracking-[0.2em] px-1">Sale Price *</label>
+                          <label className="text-[10px] font-black uppercase text-red-400 mb-2 md:mb-3 block tracking-[0.15em] md:tracking-[0.2em] px-1">Sale Price *</label>
                           <div className="relative">
-                            <span className="absolute left-3 md:left-5 top-1/2 -translate-y-1/2 text-[#ce112d] font-black text-base md:text-xl italic animate-pulse">৳</span>
+                            <span className="absolute left-3 md:left-5 top-1/2 -translate-y-1/2 text-red-400 font-black text-base md:text-xl italic animate-pulse">৳</span>
                             <input
                               type="number"
                               required
@@ -2369,6 +2369,7 @@ ${order.customer_note ? `Note: ${order.customer_note}` : ''}`.trim();
                             <select
                               value={form.category || ''}
                               onChange={e => setForm(prev => ({ ...prev, category: e.target.value, subcategory: '' }))}
+                              aria-label="Top-level product category"
                               className={`w-full bg-black/40 border-2 px-4 md:px-5 h-12 md:h-14 rounded-2xl text-xs md:text-sm font-black outline-none transition-all appearance-none cursor-pointer pr-10 text-white ${
                                 form.category ? 'border-[#ce112d]/50 bg-[#ce112d]/5 focus:border-[#ce112d]' : 'border-zinc-800 hover:border-zinc-700 focus:border-[#ce112d]'
                               }`}
@@ -2405,6 +2406,7 @@ ${order.customer_note ? `Note: ${order.customer_note}` : ''}`.trim();
                               <select
                                 value={form.subcategory || ''}
                                 onChange={e => setForm(prev => ({ ...prev, subcategory: e.target.value }))}
+                                aria-label="Product subcategory"
                                 className={`w-full bg-black/40 border-2 px-4 md:px-5 h-12 md:h-14 rounded-2xl text-xs md:text-sm font-black outline-none transition-all appearance-none cursor-pointer pr-10 text-white ${
                                   form.subcategory ? 'border-rose-500/50 bg-rose-500/5 focus:border-rose-500' : 'border-zinc-800 hover:border-zinc-700 focus:border-rose-500'
                                 }`}
@@ -2806,6 +2808,7 @@ ${order.customer_note ? `Note: ${order.customer_note}` : ''}`.trim();
                             <label className="relative w-14 h-14 shrink-0 cursor-pointer rounded-2xl border-2 border-white/15 shadow-xl overflow-hidden transition-all hover:scale-105 hover:border-white/30" style={{ backgroundColor: form._newColorHex || '#888888' }}>
                               <input
                                 type="color"
+                                aria-label="Pick a custom color"
                                 value={form._newColorHex || '#888888'}
                                 onChange={e => {
                                   const matched = getColorName(e.target.value);
@@ -3041,8 +3044,8 @@ ${order.customer_note ? `Note: ${order.customer_note}` : ''}`.trim();
                   <label className="flex items-center gap-4 md:gap-6 p-6 md:p-10 bg-[#ce112d]/5 rounded-2xl md:rounded-[40px] border border-[#ce112d]/20 cursor-pointer hover:bg-[#ce112d]/10 transition-all group shadow-2xl">
                     <input type="checkbox" checked={form.is_exclusive} onChange={e => setForm({ ...form, is_exclusive: e.target.checked })} className="w-8 h-8 rounded-xl accent-[#ce112d] shrink-0" />
                     <div>
-                      <span className="text-base font-black text-[#ce112d] uppercase tracking-wider italic">Exclusive Product</span>
-                      <p className="text-xs font-semibold text-red-900/60 mt-1">Requires 500 TK advance</p>
+                      <span className="text-base font-black text-red-400 uppercase tracking-wider italic">Exclusive Product</span>
+                      <p className="text-xs font-semibold text-red-300/70 mt-1">Requires 500 TK advance</p>
                     </div>
                   </label>
                 </div>
@@ -3057,7 +3060,7 @@ ${order.customer_note ? `Note: ${order.customer_note}` : ''}`.trim();
                     />
                     <div>
                       <span className="text-base font-black text-emerald-400 uppercase tracking-wider italic">Notify Signed-in Users</span>
-                      <p className="text-xs font-semibold text-emerald-900/50 mt-1">
+                      <p className="text-xs font-semibold text-emerald-400/60 mt-1">
                         Send an in-app alert on their Account page when this product is published
                       </p>
                     </div>

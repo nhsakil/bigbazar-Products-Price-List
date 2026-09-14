@@ -48,24 +48,24 @@ export default function Footer({ onTrackOrder, onSelectCategory }) {
                                 </h2>
                                 <div className="h-[2px] bg-[#ce112d] w-10 mt-2 transition-all duration-300 group-hover:w-full" />
                             </Link>
-                            <p className="text-zinc-500 font-medium leading-relaxed text-xs max-w-sm">
+                            <p className="text-zinc-600 font-medium leading-relaxed text-sm max-w-sm">
                                 Big Bazar — Your Ultimate Family Fashion Destination.
                             </p>
                         </div>
 
                         {/* Contact details */}
-                        <div className="space-y-3 text-xs font-semibold text-zinc-700">
+                        <div className="space-y-3 text-sm font-medium text-zinc-700">
                             <div className="flex items-center gap-3">
-                                <Phone size={15} className="text-[#ce112d] shrink-0" />
-                                <a href="tel:01857045449" className="hover:text-[#ce112d] transition-colors">01857045449</a>
+                                <Phone size={16} className="text-[#ce112d] shrink-0" />
+                                <a href="tel:01857045449" className="hover:text-[#ce112d] transition-colors py-0.5">01857045449</a>
                             </div>
                             <div className="flex items-center gap-3">
-                                <Mail size={15} className="text-[#ce112d] shrink-0" />
-                                <a href="mailto:infobigbazar01@gmail.com" className="hover:text-[#ce112d] transition-colors">infobigbazar01@gmail.com</a>
+                                <Mail size={16} className="text-[#ce112d] shrink-0" />
+                                <a href="mailto:infobigbazar01@gmail.com" className="hover:text-[#ce112d] transition-colors py-0.5">infobigbazar01@gmail.com</a>
                             </div>
                             <div className="flex items-start gap-3">
-                                <MapPin size={15} className="text-[#ce112d] shrink-0 mt-0.5" />
-                                <span className="leading-tight text-zinc-600 font-medium">
+                                <MapPin size={16} className="text-[#ce112d] shrink-0 mt-0.5" />
+                                <span className="leading-snug text-zinc-600">
                                     {language === 'bn' 
                                         ? '২য় তলা, জমিদারের প্লাজা, বারইয়ারহাট, মীরসরাই, চট্টগ্রাম' 
                                         : '2nd Floor, Jomidar Plaza, Baraiyarhat, Mirsharai, Chattogram'}
@@ -99,10 +99,10 @@ export default function Footer({ onTrackOrder, onSelectCategory }) {
                         
                         {/* SHOP Column */}
                         <div className="space-y-4">
-                            <h4 className="text-xs font-black uppercase tracking-widest text-zinc-900 border-b border-zinc-200 pb-2.5">
+                            <h3 className="text-xs font-black uppercase tracking-widest text-zinc-900 border-b border-zinc-200 pb-2.5">
                                 {language === 'bn' ? 'কেনাকাটা' : 'SHOP'}
-                            </h4>
-                            <ul className="space-y-3 font-semibold text-zinc-600 text-xs flex flex-col items-start">
+                            </h3>
+                            <ul className="space-y-3 font-semibold text-zinc-600 text-xs sm:text-sm flex flex-col items-start">
                                 <li><button type="button" onClick={() => handleCategoryClick('Men')} className="hover:text-[#ce112d] hover:translate-x-1 transition-all duration-300">{language === 'bn' ? 'ছেলেদের' : 'Men'}</button></li>
                                 <li><button type="button" onClick={() => handleCategoryClick('Women')} className="hover:text-[#ce112d] hover:translate-x-1 transition-all duration-300">{language === 'bn' ? 'মেয়েদের' : 'Women'}</button></li>
                                 <li><button type="button" onClick={() => handleCategoryClick('Kids (Boys)')} className="hover:text-[#ce112d] hover:translate-x-1 transition-all duration-300">{language === 'bn' ? 'বাচ্চাদের (ছেলে)' : 'Kids (Boys)'}</button></li>
@@ -112,10 +112,10 @@ export default function Footer({ onTrackOrder, onSelectCategory }) {
 
                         {/* HELP Column */}
                         <div className="space-y-4">
-                            <h4 className="text-xs font-black uppercase tracking-widest text-zinc-900 border-b border-zinc-200 pb-2.5">
+                            <h3 className="text-xs font-black uppercase tracking-widest text-zinc-900 border-b border-zinc-200 pb-2.5">
                                 {language === 'bn' ? 'সহায়তা' : 'HELP'}
-                            </h4>
-                            <ul className="space-y-3 font-semibold text-zinc-600 text-xs flex flex-col items-start">
+                            </h3>
+                            <ul className="space-y-3 font-semibold text-zinc-600 text-xs sm:text-sm flex flex-col items-start">
                                 <li><Link to="/contact-us" className="hover:text-[#ce112d] transition-colors">{language === 'bn' ? 'যোগাযোগ করুন' : 'Contact Us'}</Link></li>
                                 <li><Link to="/faq" className="hover:text-[#ce112d] transition-colors">{language === 'bn' ? 'প্রশ্নোত্তর (FAQs)' : 'FAQs'}</Link></li>
                                 <li><Link to="/size-guide" className="hover:text-[#ce112d] transition-colors">{language === 'bn' ? 'সাইজ গাইড' : 'Size Guide'}</Link></li>
@@ -138,10 +138,10 @@ export default function Footer({ onTrackOrder, onSelectCategory }) {
 
                         {/* COMPANY Column */}
                         <div className="space-y-4">
-                            <h4 className="text-xs font-black uppercase tracking-widest text-zinc-900 border-b border-zinc-200 pb-2.5">
+                            <h3 className="text-xs font-black uppercase tracking-widest text-zinc-900 border-b border-zinc-200 pb-2.5">
                                 {language === 'bn' ? 'প্রতিষ্ঠান' : 'COMPANY'}
-                            </h4>
-                            <ul className="space-y-3 font-semibold text-zinc-600 text-xs flex flex-col items-start">
+                            </h3>
+                            <ul className="space-y-3 font-semibold text-zinc-600 text-xs sm:text-sm flex flex-col items-start">
                                 <li><Link to="/about-us" className="hover:text-[#ce112d] transition-colors">{language === 'bn' ? 'আমাদের পরিচিতি' : 'About Us'}</Link></li>
                                 <li><Link to="/store-locations" className="hover:text-[#ce112d] transition-colors">{language === 'bn' ? 'শোরুমের ঠিকানা' : 'Store Locations'}</Link></li>
                             </ul>
@@ -149,10 +149,10 @@ export default function Footer({ onTrackOrder, onSelectCategory }) {
 
                         {/* LEGAL Column */}
                         <div className="space-y-4">
-                            <h4 className="text-xs font-black uppercase tracking-widest text-zinc-900 border-b border-zinc-200 pb-2.5">
+                            <h3 className="text-xs font-black uppercase tracking-widest text-zinc-900 border-b border-zinc-200 pb-2.5">
                                 {language === 'bn' ? 'পলিসি ও শর্তাবলী' : 'LEGAL'}
-                            </h4>
-                            <ul className="space-y-3 font-semibold text-zinc-600 text-xs flex flex-col items-start">
+                            </h3>
+                            <ul className="space-y-3 font-semibold text-zinc-600 text-xs sm:text-sm flex flex-col items-start">
                                 <li><Link to="/privacy-policy" className="hover:text-[#ce112d] transition-colors">{language === 'bn' ? 'প্রাইভেসি পলিসি' : 'Privacy Policy'}</Link></li>
                                 <li><Link to="/terms" className="hover:text-[#ce112d] transition-colors">{language === 'bn' ? 'সেবার শর্তাবলী' : 'Terms of Service'}</Link></li>
                                 <li><Link to="/refund" className="hover:text-[#ce112d] transition-colors">{language === 'bn' ? 'রিফান্ড পলিসি' : 'Refund Policy'}</Link></li>

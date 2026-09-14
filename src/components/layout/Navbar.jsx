@@ -41,23 +41,27 @@ const Navbar = ({ selectedCategory, onSelectCategory, onTrackOrder, onOpenCart, 
                         </button>
                     </div>
 
-                    {/* Desktop Category Links */}
-                    <div className="hidden lg:flex items-center gap-6">
+                    {/* Desktop Category Links — Primary Shopping Navigation */}
+                    <div className="hidden lg:flex items-center gap-1 md:gap-2">
                         {categories.map((cat) => (
                             <button
                                 key={cat.id}
                                 onClick={() => handleCategoryClick(cat.id)}
-                                className={`text-[11px] font-black uppercase tracking-[0.15em] transition-all relative py-1 ${selectedCategory === cat.id ? 'text-[#ce112d]' : 'text-zinc-500 hover:text-zinc-900'}`}
+                                className={`text-xs md:text-sm font-bold tracking-wide transition-all relative px-3.5 py-2 rounded-xl ${
+                                    selectedCategory === cat.id 
+                                        ? 'text-[#ce112d] bg-rose-50/70 font-black' 
+                                        : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50'
+                                }`}
                             >
                                 {cat.label}
                                 {selectedCategory === cat.id && (
-                                    <motion.div layoutId="navline" className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#ce112d]" />
+                                    <motion.div layoutId="navline" className="absolute bottom-0 left-2 right-2 h-0.5 bg-[#ce112d] rounded-full" />
                                 )}
                             </button>
                         ))}
                     </div>
 
-                    {/* Hamburger — only below lg (same breakpoint as desktop links). Quick actions live in the drawer. */}
+                    {/* Hamburger — only below lg. Quick actions live in the drawer. */}
                     <div className="lg:hidden flex items-center ml-auto">
                         <button
                             onClick={onOpenCategories}
@@ -72,29 +76,55 @@ const Navbar = ({ selectedCategory, onSelectCategory, onTrackOrder, onOpenCart, 
                         </button>
                     </div>
 
-                    {/* Quick Access — desktop only (lg+). Never open beside the hamburger. */}
+                    {/* Quick Access — desktop only (lg+). Cohesive button hierarchy. */}
                     <div className="hidden lg:flex items-center gap-2 md:gap-3">
-                        {/* Track Order */}
+                        {/* Track Order — Subordinate utility link */}
                         <button
                             onClick={onTrackOrder}
-                            className="px-4 py-2 rounded-xl text-zinc-400 hover:text-zinc-900 bg-zinc-50 transition-all border border-transparent flex items-center gap-2"
+                            className="px-3 py-2 rounded-xl text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50 transition-all flex items-center gap-1.5 text-xs font-semibold"
+                            title={t('track')}
+                            aria-label={t('track')}
                         >
-                            <Globe size={18} />
-                            <span className="text-[10px] font-black uppercase tracking-widest">{t('track')}</span>
+                            <Globe size={16} className="text-zinc-400" />
+                            <span>{t('track')}</span>
                         </button>
 
-                        {/* Language */}
-                        <button
-                            onClick={toggleLanguage}
-                            className="w-11 h-11 rounded-xl bg-zinc-50 flex items-center justify-center active:scale-95 transition-all text-zinc-900 border border-transparent hover:border-zinc-200"
+                        {/* Language Switcher — Standardized Segmented Control */}
+                        <div 
+                            role="group" 
+                            aria-label={language === 'bn' ? 'ভাষা নির্বাচন' : 'Language switcher'} 
+                            className="flex items-center bg-zinc-100 border border-zinc-200/80 rounded-xl p-0.5 h-10"
                         >
-                            <span className="text-[10px] font-black">{language === 'bn' ? 'EN' : 'বাং'}</span>
-                        </button>
+                            <button
+                                type="button"
+                                onClick={() => language !== 'en' && toggleLanguage()}
+                                aria-pressed={language === 'en'}
+                                className={`px-2.5 h-full rounded-lg text-xs font-bold transition-all ${
+                                    language === 'en' 
+                                        ? 'bg-white text-zinc-900 shadow-sm' 
+                                        : 'text-zinc-500 hover:text-zinc-800'
+                                }`}
+                            >
+                                EN
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => language !== 'bn' && toggleLanguage()}
+                                aria-pressed={language === 'bn'}
+                                className={`px-2.5 h-full rounded-lg text-xs font-bold transition-all ${
+                                    language === 'bn' 
+                                        ? 'bg-[#ce112d] text-white shadow-sm' 
+                                        : 'text-zinc-500 hover:text-zinc-800'
+                                }`}
+                            >
+                                বাং
+                            </button>
+                        </div>
 
                         {/* Account */}
                         <button
                             onClick={() => navigate('/account')}
-                            className="w-11 h-11 rounded-xl bg-zinc-50 flex items-center justify-center active:scale-95 transition-all border border-transparent hover:border-zinc-200 overflow-hidden"
+                            className="w-10 h-10 rounded-xl bg-zinc-50 hover:bg-zinc-100 flex items-center justify-center active:scale-95 transition-all border border-zinc-200/80 overflow-hidden text-zinc-700"
                             aria-label={isLoggedIn ? 'Account' : 'Sign in'}
                         >
                             {isLoggedIn && user?.avatar_url ? (
@@ -107,10 +137,11 @@ const Navbar = ({ selectedCategory, onSelectCategory, onTrackOrder, onOpenCart, 
                         {/* Cart */}
                         <button
                             onClick={onOpenCart}
-                            className="relative h-11 px-5 rounded-xl flex items-center justify-center gap-2.5 bg-[#ce112d] text-white shadow-xl shadow-red-500/20 active:scale-95 hover:brightness-110 transition-all"
+                            className="relative h-10 px-4 rounded-xl flex items-center justify-center gap-2 bg-[#ce112d] hover:bg-[#b00e26] text-white shadow-md active:scale-95 transition-all font-bold text-xs"
+                            aria-label={cartCount > 0 ? `Shopping cart with ${cartCount} items` : 'Shopping cart'}
                         >
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="8" cy="21" r="1" /><circle cx="19" cy="21" r="1" /><path d="m2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" /></svg>
-                            <span className="text-[10px] font-black uppercase tracking-widest">
+                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="8" cy="21" r="1" /><circle cx="19" cy="21" r="1" /><path d="m2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" /></svg>
+                            <span className="uppercase tracking-wide">
                                 {language === 'bn' ? (cartCount > 0 ? `ব্যাগ (${cartCount})` : 'ব্যাগ') : (cartCount > 0 ? `Bag (${cartCount})` : 'Bag')}
                             </span>
                         </button>
