@@ -21,7 +21,7 @@ export default function MessengerFAB() {
             rel="noopener noreferrer"
             onClick={handleClick}
             aria-label={language === 'bn' ? 'মেসেঞ্জারে অর্ডার করুন' : 'Order on Messenger'}
-            className="fixed bottom-[76px] lg:bottom-8 right-3 md:right-6 z-[1005] bg-[#0084FF] text-white shadow-[0_6px_24px_rgba(0,132,255,0.45)] hover:scale-105 active:scale-95 transition-all duration-300 no-underline"
+            className="fixed bottom-[140px] sm:bottom-[76px] lg:bottom-8 right-3 md:right-6 z-[1005] bg-[#0084FF] text-white shadow-[0_6px_24px_rgba(0,132,255,0.45)] hover:scale-105 active:scale-95 transition-all duration-300 no-underline"
         >
           {/* Mobile View: Compact circular FAB so it never blocks search input or content */}
           <div className="sm:hidden w-12 h-12 rounded-full flex items-center justify-center relative">

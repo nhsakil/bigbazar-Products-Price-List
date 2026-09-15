@@ -61,8 +61,13 @@
   }
 }
 
+/* Mobile: lift above the fixed bottom nav bar (h-14 ~56px) + safe-area padding
+   Bottom nav is ~56px tall + ~8px padding = ~80px from bottom.
+   We add extra clearance so the FAB doesn't touch the floating cart button. */
 @media (max-width: 640px) {
   .chat-widget-fab {
+    bottom: 88px;
+    right: 12px;
     padding: 8px 14px;
   }
 }
