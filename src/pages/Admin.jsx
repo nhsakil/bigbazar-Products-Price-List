@@ -26,6 +26,19 @@ export default function Admin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [adminTheme, setAdminTheme] = useState(() => {
+    return localStorage.getItem('admin_theme') || 'light';
+  });
+
+  const toggleAdminTheme = () => {
+    const next = adminTheme === 'dark' ? 'light' : 'dark';
+    setAdminTheme(next);
+    try {
+      localStorage.setItem('admin_theme', next);
+    } catch {
+      // ignore storage errors
+    }
+  };
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('orders');
@@ -1088,11 +1101,23 @@ ${order.customer_note ? `Note: ${order.customer_note}` : ''}`.trim();
   };
 
   if (!session) return (
-    <div className="min-h-screen bg-black flex items-center justify-center p-6 font-sans">
-      <div className="w-full max-w-md space-y-8 bg-zinc-900 p-10 rounded-[32px] border border-white/5 shadow-2xl">
+    <div className={`min-h-screen flex items-center justify-center p-6 font-sans relative ${adminTheme === 'light' ? 'bg-slate-100' : 'bg-black'}`}>
+      {/* Theme toggle on login screen */}
+      <button
+        onClick={toggleAdminTheme}
+        title={adminTheme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+        className={`absolute top-5 right-5 p-2.5 rounded-xl transition-all ${adminTheme === 'light' ? 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50' : 'bg-zinc-800 border border-white/10 text-zinc-400 hover:bg-zinc-700'}`}
+      >
+        {adminTheme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+      </button>
+      <div className={`w-full max-w-md space-y-8 p-10 rounded-[32px] shadow-2xl ${
+        adminTheme === 'light'
+          ? 'bg-white border border-slate-200 shadow-slate-200'
+          : 'bg-zinc-900 border border-white/5'
+      }`}>
         <div className="text-center space-y-2">
-          <h2 className="text-3xl font-bold tracking-tight text-white uppercase">Admin <span className="text-[#ce112d]">Login</span></h2>
-          <p className="text-sm text-zinc-500 font-medium">
+          <h2 className={`text-3xl font-bold tracking-tight uppercase ${adminTheme === 'light' ? 'text-slate-900' : 'text-white'}`}>Admin <span className="text-[#ce112d]">Login</span></h2>
+          <p className={`text-sm font-medium ${adminTheme === 'light' ? 'text-slate-500' : 'text-zinc-500'}`}>
             Enter your email & password to access the dashboard
           </p>
         </div>
@@ -1130,28 +1155,36 @@ ${order.customer_note ? `Note: ${order.customer_note}` : ''}`.trim();
           }
         }} className="space-y-4">
           <div className="space-y-2">
-            <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider ml-1">Email Address</label>
+            <label className={`text-xs font-semibold uppercase tracking-wider ml-1 ${adminTheme === 'light' ? 'text-slate-500' : 'text-zinc-500'}`}>Email Address</label>
             <input
               type="email"
               placeholder="Enter your email"
-              className="w-full bg-black border border-zinc-800 h-12 px-4 rounded-2xl text-sm font-medium focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 outline-none transition-all text-white"
+              className={`w-full h-12 px-4 rounded-2xl text-sm font-medium outline-none transition-all ${
+                adminTheme === 'light'
+                  ? 'bg-slate-50 border border-slate-300 text-slate-900 placeholder-slate-400 focus:border-[#ce112d] focus:ring-1 focus:ring-[#ce112d]'
+                  : 'bg-black border border-zinc-800 text-white placeholder-zinc-600 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500'
+              }`}
               value={email}
               onChange={e => setEmail(e.target.value)}
             />
           </div>
           <div className="space-y-2">
-            <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider ml-1">Password</label>
+            <label className={`text-xs font-semibold uppercase tracking-wider ml-1 ${adminTheme === 'light' ? 'text-slate-500' : 'text-zinc-500'}`}>Password</label>
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
-                className="w-full bg-black border border-zinc-800 h-12 pl-4 pr-12 rounded-2xl text-sm font-medium focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 outline-none transition-all text-white"
+                className={`w-full h-12 pl-4 pr-12 rounded-2xl text-sm font-medium outline-none transition-all ${
+                  adminTheme === 'light'
+                    ? 'bg-slate-50 border border-slate-300 text-slate-900 placeholder-slate-400 focus:border-[#ce112d] focus:ring-1 focus:ring-[#ce112d]'
+                    : 'bg-black border border-zinc-800 text-white placeholder-zinc-600 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500'
+                }`}
                 value={password}
                 onChange={e => setPassword(e.target.value)}
               />
               <button
                 type="button"
-                className="absolute right-4 top-1/2 -translate-y-1/2 p-2 text-zinc-400 hover:text-white transition-colors"
+                className={`absolute right-4 top-1/2 -translate-y-1/2 p-2 transition-colors ${adminTheme === 'light' ? 'text-slate-400 hover:text-slate-700' : 'text-zinc-400 hover:text-white'}`}
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -1175,19 +1208,36 @@ ${order.customer_note ? `Note: ${order.customer_note}` : ''}`.trim();
   );
 
   return (
-    <div className="admin-a11y min-h-screen bg-[#0a0a0c] text-[#e4e4e7] flex flex-col lg:flex-row font-sans selection:bg-[#ce112d]/30">
+    <div className={`admin-a11y min-h-screen flex flex-col lg:flex-row font-sans selection:bg-[#ce112d]/30 ${
+      adminTheme === 'light'
+        ? 'admin-theme-light bg-slate-50 text-slate-900'
+        : 'admin-theme-dark bg-[#0a0a0c] text-[#e4e4e7]'
+    }`}>
       {/* Mobile Top Bar */}
-      <div className="lg:hidden flex items-center justify-between p-4 bg-zinc-950 border-b border-white/5 sticky top-0 z-[60] backdrop-blur-xl">
+      <div className={`lg:hidden flex items-center justify-between p-4 border-b sticky top-0 z-[60] backdrop-blur-xl ${
+        adminTheme === 'light'
+          ? 'bg-white border-slate-200 text-slate-900'
+          : 'bg-zinc-950 border-white/5 text-white'
+      }`}>
         <div className="flex items-center gap-2">
           <ShoppingBag className="text-[#ce112d] w-5 h-5" />
-          <h1 className="text-lg font-bold uppercase tracking-tight text-white">Big<span className="text-[#ce112d]">Bazar</span></h1>
+          <h1 className={`text-lg font-bold uppercase tracking-tight ${adminTheme === 'light' ? 'text-slate-900' : 'text-white'}`}>Big<span className="text-[#ce112d]">Bazar</span></h1>
         </div>
-        <button
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="p-2 hover:bg-zinc-900 rounded-xl transition-all"
-        >
-          {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={toggleAdminTheme}
+            title={adminTheme === 'light' ? 'Dark Mode' : 'Light Mode'}
+            className={`p-2 rounded-xl transition-all ${adminTheme === 'light' ? 'hover:bg-slate-100 text-slate-500' : 'hover:bg-zinc-800 text-zinc-400'}`}
+          >
+            {adminTheme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+          </button>
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className={`p-2 rounded-xl transition-all ${adminTheme === 'light' ? 'hover:bg-slate-100' : 'hover:bg-zinc-900'}`}
+          >
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
 
       {/* Sidebar Overlay (Mobile) */}
@@ -1199,11 +1249,15 @@ ${order.customer_note ? `Note: ${order.customer_note}` : ''}`.trim();
       )}
 
       {/* Sidebar - Fixed Position */}
-      <aside className={`fixed lg:sticky top-0 left-0 w-64 h-[100dvh] lg:h-screen border-r border-[#1d1d21] px-6 pt-24 pb-6 lg:py-8 flex flex-col justify-between shrink-0 bg-[#0a0a0c] z-50 transition-transform duration-300 lg:translate-x-0 overflow-y-auto no-scrollbar ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+      <aside className={`fixed lg:sticky top-0 left-0 w-64 h-[100dvh] lg:h-screen border-r px-6 pt-24 pb-6 lg:py-8 flex flex-col justify-between shrink-0 z-50 transition-transform duration-300 lg:translate-x-0 overflow-y-auto no-scrollbar ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} ${
+        adminTheme === 'light'
+          ? 'bg-white border-slate-200'
+          : 'bg-[#0a0a0c] border-[#1d1d21]'
+      }`}>
         <div className="space-y-10">
           <div className="hidden lg:flex items-center gap-3 px-2">
             <ShoppingBag className="text-[#ce112d]" />
-            <h1 className="text-xl font-bold uppercase tracking-tight text-white">Big<span className="text-[#ce112d]">Bazar</span></h1>
+            <h1 className={`text-xl font-bold uppercase tracking-tight ${adminTheme === 'light' ? 'text-slate-900' : 'text-white'}`}>Big<span className="text-[#ce112d]">Bazar</span></h1>
           </div>
           <nav className="space-y-1">
             {[
@@ -1231,19 +1285,42 @@ ${order.customer_note ? `Note: ${order.customer_note}` : ''}`.trim();
                     if (tab.id === 'settings') fetchPendingCodes();
                   }
                 }}
-                className={`w-full flex items-center gap-3.5 p-3.5 rounded-2xl text-[11px] font-bold tracking-wider transition-all duration-300 ${tab.special && activeTab !== tab.id ? 'border-2 border-dashed border-[#ce112d]/40 text-[#ce112d] hover:bg-[#ce112d]/10 hover:border-[#ce112d]' : activeTab === tab.id ? 'bg-gradient-to-r from-[#ce112d] to-[#ff1c3a] text-white shadow-xl shadow-red-900/30 ring-1 ring-white/10' : 'hover:bg-white/[0.03] text-zinc-400 hover:text-zinc-200'}`}
+                className={`w-full flex items-center gap-3.5 p-3.5 rounded-2xl text-[11px] font-bold tracking-wider transition-all duration-300 ${
+                  tab.special && activeTab !== tab.id
+                    ? 'border-2 border-dashed border-[#ce112d]/40 text-[#ce112d] hover:bg-[#ce112d]/10 hover:border-[#ce112d]'
+                    : activeTab === tab.id
+                      ? 'bg-gradient-to-r from-[#ce112d] to-[#ff1c3a] text-white shadow-xl shadow-red-900/30 ring-1 ring-white/10'
+                      : adminTheme === 'light'
+                        ? 'text-slate-500 hover:bg-slate-100 hover:text-slate-800'
+                        : 'hover:bg-white/[0.03] text-zinc-400 hover:text-zinc-200'
+                }`}
               >
-                <div className={`${activeTab === tab.id ? 'text-white' : 'text-zinc-500 group-hover:text-white'}`}>{tab.icon}</div>
+                <div className={`${activeTab === tab.id ? 'text-white' : adminTheme === 'light' ? 'text-slate-400' : 'text-zinc-500'}`}>{tab.icon}</div>
                 <span className="font-semibold text-xs tracking-normal">{tab.label}</span>
                 {tab.count > 0 && (
-                  <span className={`ml-auto text-[10px] min-w-[20px] h-5 flex items-center justify-center rounded-full px-1.5 font-bold ${activeTab === tab.id ? 'bg-white/20 text-white' : 'bg-zinc-900 text-zinc-400'}`}>{tab.count}</span>
+                  <span className={`ml-auto text-[10px] min-w-[20px] h-5 flex items-center justify-center rounded-full px-1.5 font-bold ${
+                    activeTab === tab.id ? 'bg-white/20 text-white' : adminTheme === 'light' ? 'bg-slate-100 text-slate-500' : 'bg-zinc-900 text-zinc-400'
+                  }`}>{tab.count}</span>
                 )}
               </button>
             ))}
           </nav>
         </div>
 
-        <div className="mt-auto border-t border-white/5 pt-6 space-y-2">
+        <div className={`mt-auto border-t pt-6 space-y-2 ${adminTheme === 'light' ? 'border-slate-200' : 'border-white/5'}`}>
+          {/* Theme Toggle */}
+          <button
+            onClick={toggleAdminTheme}
+            className={`w-full flex items-center gap-3 p-4 transition-all rounded-2xl text-xs font-semibold ${
+              adminTheme === 'light'
+                ? 'text-slate-500 hover:text-slate-800 hover:bg-slate-100'
+                : 'text-zinc-400 hover:text-white hover:bg-white/5'
+            }`}
+          >
+            {adminTheme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
+            {adminTheme === 'light' ? 'Dark Mode' : 'Light Mode'}
+          </button>
+
           <button
             onClick={() => {
               fetchProducts();
@@ -1251,7 +1328,11 @@ ${order.customer_note ? `Note: ${order.customer_note}` : ''}`.trim();
               fetchReviews();
             }}
             disabled={loading}
-            className="w-full flex items-center gap-3 p-4 text-zinc-400 hover:text-white transition-all rounded-2xl hover:bg-white/5 text-xs font-semibold"
+            className={`w-full flex items-center gap-3 p-4 transition-all rounded-2xl text-xs font-semibold ${
+              adminTheme === 'light'
+                ? 'text-slate-500 hover:text-slate-800 hover:bg-slate-100'
+                : 'text-zinc-400 hover:text-white hover:bg-white/5'
+            }`}
           >
             <RotateCcw size={16} className={loading ? "animate-spin" : ""} /> {loading ? "Refreshing..." : "Refresh Data"}
           </button>
@@ -1261,7 +1342,11 @@ ${order.customer_note ? `Note: ${order.customer_note}` : ''}`.trim();
               bigBazarApi.auth.signOut();
               setIsMobileMenuOpen(false);
             }}
-            className="w-full flex items-center gap-3 p-4 text-zinc-400 hover:text-red-400 transition-all rounded-2xl hover:bg-white/5 text-xs font-semibold"
+            className={`w-full flex items-center gap-3 p-4 transition-all rounded-2xl text-xs font-semibold ${
+              adminTheme === 'light'
+                ? 'text-slate-400 hover:text-red-500 hover:bg-red-50'
+                : 'text-zinc-400 hover:text-red-400 hover:bg-white/5'
+            }`}
           >
             <LogOut size={16} /> Logout
           </button>
@@ -1269,7 +1354,7 @@ ${order.customer_note ? `Note: ${order.customer_note}` : ''}`.trim();
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-4 md:p-12 overflow-y-auto no-scrollbar bg-[#0a0a0c]">
+      <main className={`flex-1 p-4 md:p-12 overflow-y-auto no-scrollbar ${adminTheme === 'light' ? 'bg-slate-50' : 'bg-[#0a0a0c]'}`}>
         {activeTab === 'reports' ? (
           <AdminReports orders={orders} products={products} reviews={reviews} />
         ) : activeTab === 'conversations' ? (

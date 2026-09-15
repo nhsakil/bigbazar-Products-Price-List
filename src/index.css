@@ -373,4 +373,179 @@ html {
   border-radius: 1rem !important; /* 16px */
 }
 
-
+/* ════════════════════════════════════════════════════════════
+   ADMIN LIGHT THEME — .admin-theme-light overrides
+   Applied when user toggles to light mode (default)
+   ════════════════════════════════════════════════════════════ */
+
+/* ── Canvas / page background ── */
+.admin-theme-light {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+/* ── Dark card surfaces → white ── */
+.admin-theme-light .bg-zinc-950,
+.admin-theme-light .bg-\[\#0a0a0c\],
+.admin-theme-light .bg-black {
+  background-color: #ffffff !important;
+}
+
+.admin-theme-light .bg-zinc-900,
+.admin-theme-light .bg-zinc-900\/80,
+.admin-theme-light .bg-zinc-900\/50 {
+  background-color: #ffffff !important;
+}
+
+.admin-theme-light .bg-zinc-800,
+.admin-theme-light .bg-zinc-800\/60,
+.admin-theme-light .bg-zinc-800\/50 {
+  background-color: #f1f5f9 !important;
+}
+
+/* ── Subtle surface for nested sections ── */
+.admin-theme-light .bg-white\/\[0\.02\],
+.admin-theme-light .bg-white\/\[0\.03\],
+.admin-theme-light .bg-white\/\[0\.04\],
+.admin-theme-light .bg-white\/5,
+.admin-theme-light .bg-white\/10 {
+  background-color: #f8fafc !important;
+}
+
+/* ── Semi-transparent dark overlays → light ── */
+.admin-theme-light .bg-black\/40,
+.admin-theme-light .bg-black\/60,
+.admin-theme-light .bg-black\/80 {
+  background-color: rgba(241, 245, 249, 0.9) !important;
+}
+
+/* ── Borders ── */
+.admin-theme-light .border-white\/5,
+.admin-theme-light .border-white\/10,
+.admin-theme-light .border-white\/20,
+.admin-theme-light .border-\[\#1d1d21\],
+.admin-theme-light .border-zinc-800,
+.admin-theme-light .border-zinc-700 {
+  border-color: #e2e8f0 !important;
+}
+
+.admin-theme-light .border-zinc-900 {
+  border-color: #cbd5e1 !important;
+}
+
+/* ── Text colors ── */
+.admin-theme-light .text-white {
+  color: #0f172a !important;
+}
+
+.admin-theme-light .text-\[\#e4e4e7\],
+.admin-theme-light .text-zinc-100,
+.admin-theme-light .text-zinc-200 {
+  color: #1e293b !important;
+}
+
+.admin-theme-light .text-zinc-300,
+.admin-theme-light .text-zinc-400 {
+  color: #475569 !important;
+}
+
+.admin-theme-light .text-zinc-500,
+.admin-theme-light .text-zinc-600 {
+  color: #64748b !important;
+}
+
+/* Hover text in light mode */
+.admin-theme-light .hover\:text-white:hover {
+  color: #0f172a !important;
+}
+.admin-theme-light .hover\:text-zinc-200:hover {
+  color: #1e293b !important;
+}
+
+/* ── Inputs, selects, textareas ── */
+.admin-theme-light input:not([type='checkbox']):not([type='radio']):not([type='range']),
+.admin-theme-light select,
+.admin-theme-light textarea {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+.admin-theme-light input::placeholder,
+.admin-theme-light textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+.admin-theme-light input:focus,
+.admin-theme-light select:focus,
+.admin-theme-light textarea:focus {
+  border-color: #ce112d !important;
+  box-shadow: 0 0 0 1px #ce112d !important;
+  outline: none !important;
+}
+
+/* ── Tables ── */
+.admin-theme-light table thead tr {
+  background-color: #f1f5f9 !important;
+}
+
+.admin-theme-light table thead th {
+  color: #475569 !important;
+}
+
+.admin-theme-light table tbody tr {
+  border-color: #e2e8f0 !important;
+}
+
+.admin-theme-light table tbody tr:hover {
+  background-color: #f8fafc !important;
+}
+
+.admin-theme-light table tbody td {
+  color: #0f172a !important;
+}
+
+/* ── Badges / pills ── */
+.admin-theme-light .bg-zinc-900.text-zinc-400 {
+  background-color: #f1f5f9 !important;
+  color: #475569 !important;
+}
+
+/* ── Dividers ── */
+.admin-theme-light .divide-white\/5 > * + * {
+  border-color: #e2e8f0 !important;
+}
+
+/* ── Ring/shadow adjustments ── */
+.admin-theme-light .ring-white\/10 {
+  --tw-ring-color: rgba(0, 0, 0, 0.08);
+}
+
+/* ── Card box shadows in light mode ── */
+.admin-theme-light .shadow-2xl,
+.admin-theme-light .shadow-xl {
+  box-shadow: 0 4px 24px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04) !important;
+}
+
+/* ── Preserve primary action buttons (red/emerald) ── */
+.admin-theme-light .bg-\[\#ce112d\],
+.admin-theme-light .bg-emerald-600,
+.admin-theme-light .bg-emerald-500,
+.admin-theme-light .from-\[\#ce112d\],
+.admin-theme-light .bg-gradient-to-r.from-\[\#ce112d\] {
+  /* keep as-is — these are always red/green action buttons */
+}
+
+/* Preserve white text on primary buttons */
+.admin-theme-light .bg-\[\#ce112d\] .text-white,
+.admin-theme-light .bg-emerald-600 .text-white,
+.admin-theme-light button.bg-\[\#ce112d\],
+.admin-theme-light button.bg-emerald-600 {
+  color: #ffffff !important;
+}
+
+/* ── Hover states for bg-white/5 in light mode → slate-100 ── */
+.admin-theme-light .hover\:bg-white\/5:hover,
+.admin-theme-light .hover\:bg-white\/\[0\.03\]:hover {
+  background-color: #f1f5f9 !important;
+}
