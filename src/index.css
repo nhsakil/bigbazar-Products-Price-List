@@ -590,3 +590,44 @@ html {
 .admin-theme-light [class*="bg-[#0e0e"] {
   background-color: #ffffff !important;
 }
+
+/* ------------------------------------------------------------
+   LIGHT THEME REFINEMENTS — targeted fixes
+   ------------------------------------------------------------ */
+
+/* Fix 1: Gradient stat cards with from-[#ce112d]/20 (light pink bg)
+   These are decorative, not solid red buttons, so text should be dark */
+.admin-theme-light [class*="from-[#ce112d]/"] {
+  background-color: revert !important;
+}
+.admin-theme-light [class*="from-[#ce112d]/"] [class*="text-white"],
+.admin-theme-light [class*="from-[#ce112d]/"] [class*="text-zinc-"] {
+  color: #0f172a !important;
+}
+
+/* Fix 2: Preserve bg-white/20 inside solid red FAB / buttons
+   (bg-white/ inside from-[#ce112d] should remain semi-transparent white, not slate-50) */
+.admin-theme-light [class*="from-[#ce112d]"]:not([class*="from-[#ce112d]/"]) [class*="bg-white/"] {
+  background-color: rgba(255,255,255,0.2) !important;
+}
+
+/* Fix 3: bg-[#ce112d]/10 and /20 accent backgrounds — keep pink, make text dark */
+.admin-theme-light [class*="bg-[#ce112d]/"] {
+  background-color: revert !important;
+}
+.admin-theme-light [class*="bg-[#ce112d]/"] [class*="text-white"],
+.admin-theme-light [class*="bg-[#ce112d]/"] [class*="text-zinc-"] {
+  color: #0f172a !important;
+}
+
+/* Fix 4: SOLID red buttons (no opacity) — always white text */
+.admin-theme-light button[class*="bg-[#ce112d]"]:not([class*="bg-[#ce112d]/"]),
+.admin-theme-light a[class*="bg-[#ce112d]"]:not([class*="bg-[#ce112d]/"]) {
+  color: #ffffff !important;
+}
+.admin-theme-light button[class*="from-[#ce112d]"]:not([class*="from-[#ce112d]/"]) {
+  color: #ffffff !important;
+}
+.admin-theme-light button[class*="from-[#ce112d]"]:not([class*="from-[#ce112d]/"]) * {
+  color: #ffffff !important;
+}
