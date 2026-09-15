@@ -562,3 +562,31 @@ html {
 .admin-theme-light [class*="hover:bg-white/"]:hover {
   background-color: #f1f5f9 !important;
 }
+
+/* -- Additional dark arbitrary hex backgrounds (stat cards etc.) -- */
+.admin-theme-light [class*="bg-[#121"],
+.admin-theme-light [class*="bg-[#151"],
+.admin-theme-light [class*="bg-[#161"],
+.admin-theme-light [class*="bg-[#1d1d2"],
+.admin-theme-light [class*="bg-[#252"] {
+  background-color: #ffffff !important;
+}
+
+/* Also cover border-[#1d1d21] and similar dark hex borders not caught above */
+.admin-theme-light [class*="border-[#121"],
+.admin-theme-light [class*="border-[#151"],
+.admin-theme-light [class*="border-[#161"],
+.admin-theme-light [class*="border-[#252"] {
+  border-color: #e2e8f0 !important;
+}
+
+/* CSV / action button dark bg ? light */
+.admin-theme-light [class*="bg-[#0a0a"] {
+  background-color: #ffffff !important;
+}
+
+/* -- Sub-component dark hex backgrounds (AdminReports/Conversations/Users) -- */
+.admin-theme-light [class*="bg-[#0d0d"],
+.admin-theme-light [class*="bg-[#0e0e"] {
+  background-color: #ffffff !important;
+}
