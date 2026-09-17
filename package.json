@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && npx wrangler pages functions build --outfile=dist/_worker.js",
     "preview": "vite preview",
     "deploy": "vite build && npx wrangler pages deploy dist",
     "dev:backend": "npx wrangler pages dev dist"
