@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { getDb } from './db.js';
-import jwt from 'jsonwebtoken';
+import { jwtSign, jwtVerify } from './jwt-workers.js';
 import bcrypt from 'bcryptjs';
 import { FAQ_KB, DELIVERY_AREAS, normalizeQuery, matchFAQ, detectLanguage } from './assistant-kb.js';
 import {
@@ -251,7 +251,7 @@ const requireAuth = async (c, next) => {
   if (!token) return c.json({ error: 'No token provided' }, 401);
   try {
     const secret = getJwtSecret(c);
-    c.set('user', jwt.verify(token, secret));
+    c.set('user', await jwtVerify(token, secret));
     await next();
   } catch (err) {
     return c.json({ error: 'Invalid token' }, 401);
@@ -269,7 +269,7 @@ const requireAdmin = async (c, next) => {
 /**
  * Check if request originates from Admin panel or explicitly requests fresh data
  */
-const isAdminOrNoCache = (c) => {
+const isAdminOrNoCache = async (c) => {
   const authHeader = c.req.header('Authorization');
   const cacheCtrl = c.req.header('Cache-Control');
   const { _admin, _t } = c.req.query();
@@ -278,7 +278,7 @@ const isAdminOrNoCache = (c) => {
   if (authHeader) {
     try {
       const token = authHeader.replace('Bearer ', '');
-      const decoded = jwt.verify(token, getJwtSecret(c));
+      const decoded = await jwtVerify(token, getJwtSecret(c));
       isAdminAuth = decoded.type === 'admin';
     } catch (_) {}
   }
@@ -295,12 +295,12 @@ const isAdminOrNoCache = (c) => {
  * Used for authorization decisions (e.g. viewing draft/deleted products),
  * separate from cache-busting decisions.
  */
-const isAdminUser = (c) => {
+const isAdminUser = async (c) => {
   const authHeader = c.req.header('Authorization');
   if (!authHeader) return false;
   try {
     const token = authHeader.replace('Bearer ', '');
-    const decoded = jwt.verify(token, getJwtSecret(c));
+    const decoded = await jwtVerify(token, getJwtSecret(c));
     return decoded && decoded.type === 'admin';
   } catch (_) {
     return false;
@@ -316,7 +316,7 @@ const requireCustomerAuth = async (c, next) => {
   if (!token) return c.json({ error: 'Authentication required' }, 401);
   try {
     const secret = getJwtSecret(c);
-    const decoded = jwt.verify(token, secret);
+    const decoded = await jwtVerify(token, secret);
     if (decoded.type !== 'customer') return c.json({ error: 'Customer auth required' }, 403);
     c.set('customer', decoded);
     await next();
@@ -334,7 +334,7 @@ const optionalCustomerAuth = async (c, next) => {
   if (token) {
     try {
       const secret = getJwtSecret(c);
-      const decoded = jwt.verify(token, secret);
+      const decoded = await jwtVerify(token, secret);
       if (decoded.type === 'customer') {
         c.set('customer', decoded);
       }
@@ -474,7 +474,7 @@ app.post('/auth/register', async (c) => {
     );
 
     const regSecret = getJwtSecret(c);
-    const token = jwt.sign({ id, mobile, type: 'customer' }, regSecret, { expiresIn: '30d' });
+    const token = await jwtSign({ id, mobile, type: 'customer' }, regSecret, { expiresIn: '30d' });
     return c.json({
       session: { access_token: token, user: { id, name, email, mobile } },
       user: { id, name, email, mobile }
@@ -510,7 +510,7 @@ app.post('/auth/login', async (c) => {
     const valid = await bcrypt.compare(cleanInput, cleanHash);
     if (!valid) return c.json({ error: 'Incorrect password. Please try again.' }, 401);
 
-    const token = jwt.sign(
+    const token = await jwtSign(
       { id: user.id, email: user.email, type: 'admin' },
       jwtSecret,
       { expiresIn: '30d' }
@@ -541,7 +541,7 @@ app.post('/auth/login', async (c) => {
   const valid = await bcrypt.compare(password, user.password_hash);
   if (!valid) return c.json({ error: 'Incorrect password. Please try again.' }, 401);
 
-  const token = jwt.sign({ id: user.id, mobile: user.mobile, type: 'customer' }, jwtSecret, { expiresIn: '30d' });
+  const token = await jwtSign({ id: user.id, mobile: user.mobile, type: 'customer' }, jwtSecret, { expiresIn: '30d' });
   return c.json({
     session: { access_token: token, user: { id: user.id, name: user.name, email: user.email, mobile: user.mobile } },
     user: { id: user.id, name: user.name, email: user.email, mobile: user.mobile }
@@ -750,7 +750,7 @@ app.get('/products/subcategory-counts', async (c) => {
   if (!(await checkRateLimitKV(c, 'subcounts', 60, 60000))) {
     return c.json({ error: 'Too many requests' }, 429);
   }
-  const isNoCache = isAdminOrNoCache(c);
+  const isNoCache = await isAdminOrNoCache(c);
   const { category = '' } = c.req.query();
   const ver = await getCatalogVersion(c);
   const cacheKey = `cache:${ver}:subcounts:${category}`;
@@ -830,7 +830,7 @@ app.get('/products', async (c) => {
     return c.json({ error: 'Too many requests' }, 429);
   }
 
-  const isNoCache = isAdminOrNoCache(c);
+  const isNoCache = await isAdminOrNoCache(c);
   const { status, category, subcategory, search, page = 0, limit = 12, id, ids, order_by = 'created_at', ascending = 'false' } = c.req.query();
   
   const pageNum = Math.max(0, parseInt(page) || 0);
@@ -864,7 +864,7 @@ app.get('/products', async (c) => {
   const conn = getDb(c.env);
 
   try {
-    const isAdmin = isAdminUser(c);
+    const isAdmin = await isAdminUser(c);
 
     if (id) {
       // Bug #2 fix: only authenticated admins can view deleted/unpublished products
@@ -1012,7 +1012,7 @@ app.get('/products/:id', async (c) => {
     return c.json({ error: 'Too many requests' }, 429);
   }
   const pid = c.req.param('id');
-  const isNoCache = isAdminOrNoCache(c);
+  const isNoCache = await isAdminOrNoCache(c);
   const ver = await getCatalogVersion(c);
   const cacheKey = `cache:${ver}:product:${pid}`;
 
@@ -1027,7 +1027,7 @@ app.get('/products/:id', async (c) => {
 
   try {
     const conn = getDb(c.env);
-    const isAdmin = isAdminUser(c);
+    const isAdmin = await isAdminUser(c);
     // Include images + image_url so storefront can show Cloudinary / KV uploads.
     // parseProductRowLite strips data: blobs to /api/img/:id (resolved by GET /img/:id).
     const detailFields = 'id, serial_no, created_at, name, price, original_price, description, category, subcategory, video_url, status, platform_id, is_sale, is_hot, is_new, is_sold_out, is_deleted, available_sizes, available_colors, stock_count, is_exclusive, images, image_url';
@@ -1652,7 +1652,7 @@ app.post('/reviews', async (c) => {
 // SETTINGS
 // ============================================
 app.get('/settings', async (c) => {
-  const isNoCache = isAdminOrNoCache(c);
+  const isNoCache = await isAdminOrNoCache(c);
   const ver = await getCatalogVersion(c);
   const cacheKey = `cache:${ver}:settings`;
 
@@ -2004,7 +2004,7 @@ app.post('/auth/google', async (c) => {
 
     // Issue JWT
     const jwtSecret = getJwtSecret(c);
-    const token = jwt.sign(
+    const token = await jwtSign(
       { id: userId, email, type: 'customer' },
       jwtSecret,
       { expiresIn: '30d' }
