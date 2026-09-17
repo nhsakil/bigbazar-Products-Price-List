@@ -37,3 +37,7 @@ server/uploads/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+.wrangler-out/
+.wrangler-tmp/
+

@@ -5,12 +5,17 @@
   ],
   "exclude": [
     "/assets/*",
+    "/*.css",
+    "/*.js",
+    "/*.map",
     "/*.jpg",
+    "/*.jpeg",
     "/*.png",
     "/*.svg",
+    "/*.webp",
     "/*.ico",
-    "/*.json",
-    "/*.txt",
-    "/*.xml"
+    "/*.woff",
+    "/*.woff2",
+    "/*.ttf"
   ]
 }
