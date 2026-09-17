@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && wrangler pages functions build --outfile=dist/_worker.js --compatibility-date=2024-09-23 --compatibility-flags=nodejs_compat",
+    "build": "vite build",
     "preview": "vite preview",
     "deploy": "vite build && npx wrangler pages deploy dist",
     "dev:backend": "npx wrangler pages dev dist"

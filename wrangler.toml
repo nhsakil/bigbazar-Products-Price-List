@@ -3,13 +3,6 @@ pages_build_output_dir = "dist"
 compatibility_date = "2024-09-23"
 compatibility_flags = [ "nodejs_compat" ]
 
-# After you attach a custom domain in Cloudflare Pages, set this in the dashboard
-# (Settings → Environment variables) OR uncomment below once DNS/SSL is Active:
-# [vars]
-# PUBLIC_SITE_ORIGIN = "https://www.YOUR-DOMAIN.com"
-# Optional comma-separated extra CORS origins (www + apex):
-# ALLOWED_ORIGINS = "https://YOUR-DOMAIN.com,https://www.YOUR-DOMAIN.com"
-
 [[kv_namespaces]]
 binding = "BIGBAZAR_CACHE"
 id = "55b48b237fc44b5da4039e3b49edead2"
