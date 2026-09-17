@@ -450,198 +450,34 @@ class QueryBuilder {
                     ? 30000
                     : 0;
 
-// ============================================
-// Resilient Catalog Fallback (/all_products.json)
-// Used when Edge API returns HTML, 404, 500 or is unreachable
-// ============================================
-let _cachedStaticProducts = null;
-let _staticProductsPromise = null;
-
-function normalizeProductRow(p) {
-    if (!p) return null;
-    let images = p.images;
-    if (typeof images === 'string') {
-        try { images = JSON.parse(images); } catch (_) { images = [images]; }
-    }
-    if (!Array.isArray(images)) images = [];
-    return {
-        ...p,
-        images,
-        image_url: p.image_url || images[0] || null,
-        is_sale: !!p.is_sale,
-        is_hot: !!p.is_hot,
-        is_new: !!p.is_new,
-        is_sold_out: !!p.is_sold_out,
-        is_exclusive: !!p.is_exclusive
-    };
-}
-
-async function fetchStaticProducts() {
-    if (_cachedStaticProducts) return _cachedStaticProducts;
-    if (_staticProductsPromise) return _staticProductsPromise;
-    _staticProductsPromise = (async () => {
-        try {
-            const res = await fetch('/all_products.json');
-            if (!res.ok) throw new Error(`Static catalog HTTP ${res.status}`);
-            const data = await res.json();
-            if (Array.isArray(data)) {
-                _cachedStaticProducts = data.map(normalizeProductRow);
-                return _cachedStaticProducts;
-            }
-        } catch (e) {
-            console.warn('Fallback static products failed to load:', e);
-        }
-        return [];
-    })();
-    return _staticProductsPromise;
-}
-
-function queryStaticProducts(allProducts, params, isSingle) {
-    let list = allProducts.filter(p => (!p.status || p.status === 'published') && !p.is_deleted && p.name && p.name.trim().length > 0);
-
-    const id = params.get('id');
-    if (id) {
-        const found = list.find(p => String(p.id) === String(id));
-        return { data: isSingle ? (found || null) : (found ? [found] : []), count: found ? 1 : 0 };
-    }
-
-    const ids = params.get('ids');
-    if (ids) {
-        const idList = ids.split(',').filter(Boolean);
-        list = list.filter(p => idList.includes(String(p.id)));
-    }
-
-    const category = params.get('category');
-    if (category && category !== 'All') {
-        if (category === 'New') {
-            list = list.filter(p => !!p.is_new);
-        } else if (category === 'Sale') {
-            list = list.filter(p => !!p.is_sale);
-        } else if (category === 'Premium') {
-            list = list.filter(p => !!p.is_exclusive);
-        } else {
-            const catList = category.split(',').map(c => c.trim().toLowerCase()).filter(Boolean);
-            const catMap = {
-                'men': ['men', 'ছেলেদের'],
-                'women': ['women', 'মেয়েদের'],
-                'kids (boys)': ['kids (boys)', 'বাচ্চাদের (ছেলে)'],
-                'kids (girls)': ['kids (girls)', 'বাচ্চাদের (মেয়ে)']
-            };
-            const targets = new Set();
-            catList.forEach(c => {
-                const mapped = catMap[c];
-                if (mapped) mapped.forEach(m => targets.add(m.toLowerCase()));
-                else targets.add(c);
-            });
-            list = list.filter(p => p.category && targets.has(String(p.category).trim().toLowerCase()));
-        }
-    }
-
-    const subcategory = params.get('subcategory');
-    if (subcategory) {
-        const subClean = String(subcategory).trim().toLowerCase().replace(/-/g, ' ');
-        list = list.filter(p => {
-            const pSub = String(p.subcategory || '').trim().toLowerCase().replace(/-/g, ' ');
-            return pSub === subClean || pSub.includes(subClean) || (p.name && p.name.toLowerCase().includes(subClean));
-        });
-    }
-
-    const search = params.get('search');
-    if (search) {
-        const q = String(search).trim().toLowerCase();
-        list = list.filter(p =>
-            (p.name && p.name.toLowerCase().includes(q)) ||
-            (p.description && p.description.toLowerCase().includes(q)) ||
-            (p.subcategory && p.subcategory.toLowerCase().includes(q))
-        );
-    }
-
-    const orderBy = params.get('order_by') || 'created_at';
-    const ascending = params.get('ascending') === 'true';
-    list.sort((a, b) => {
-        let valA = a[orderBy];
-        let valB = b[orderBy];
-        if (valA === undefined || valA === null) valA = '';
-        if (valB === undefined || valB === null) valB = '';
-        if (valA < valB) return ascending ? -1 : 1;
-        if (valA > valB) return ascending ? 1 : -1;
-        return 0;
-    });
-
-    const totalCount = list.length;
-    const page = parseInt(params.get('page')) || 0;
-    const limit = parseInt(params.get('limit')) || 12;
-    const start = page * limit;
-    const paged = list.slice(start, start + limit);
-
-    let data = isSingle ? (paged[0] || null) : paged;
-    return { data, count: totalCount, error: null };
-}
-
-async function queryStaticSubcategoryCounts(category) {
-    const allProducts = await fetchStaticProducts();
-    let list = allProducts.filter(p => (!p.status || p.status === 'published') && !p.is_deleted);
-    if (category && category !== 'All') {
-        const catList = category.split(',').map(c => c.trim().toLowerCase());
-        list = list.filter(p => p.category && catList.includes(p.category.toLowerCase()));
-    }
-    const countsMap = {};
-    list.forEach(p => {
-        if (p.subcategory) {
-            countsMap[p.subcategory] = (countsMap[p.subcategory] || 0) + 1;
-        }
-    });
-    const result = Object.entries(countsMap).map(([sub, count]) => ({ subcategory: sub, count }));
-    return { data: result, count: result.length, error: null };
-}
-
-        const doFetch = async () => {
-            let res;
-            let json = null;
-            let isJson = false;
-
-            try {
-                res = await fetch(url, { 
-                    headers: headers(),
-                    cache: (isAdmin || cacheTtl === 0) ? 'no-store' : 'default'
-                });
-                const contentType = res.headers.get('content-type') || '';
-                if (contentType.includes('application/json')) {
-                    json = await res.json();
-                    isJson = true;
-                }
-            } catch (_) {
-                // Network or CORS error — fall through to static fallback
-            }
-
-            if (isJson && res && res.ok && json) {
+        if (cacheTtl > 0) {
+            return getCachedOrFetch(url, cacheTtl, async () => {
+                const res = await fetch(url, { headers: headers(), cache: 'no-store' });
+                const json = await res.json();
+                if (!res.ok) return { data: null, error: { message: json.error }, count: 0 };
                 let data = json.data;
                 const count = json.count || (Array.isArray(data) ? data.length : (data ? 1 : 0));
                 if (this._single) data = Array.isArray(data) ? data[0] || null : data;
                 return { data, error: null, count };
-            }
-
-            // Fallback for products when API endpoint returns HTML, 404, 500, or network failure
-            if (this._table === 'products') {
-                const all = await fetchStaticProducts();
-                if (all && all.length > 0) {
-                    return queryStaticProducts(all, params, this._single);
-                }
-            }
-
-            if (this._table === 'subcategory-counts') {
-                return queryStaticSubcategoryCounts(params.get('category'));
-            }
-
-            const errMsg = json?.error || (res?.status ? `HTTP ${res.status}` : 'Network error');
-            return { data: null, error: { message: errMsg }, count: 0 };
-        };
-
-        if (cacheTtl > 0) {
-            return getCachedOrFetch(url, cacheTtl, doFetch);
+            });
         }
 
-        return doFetch();
+        const res = await fetch(url, { 
+            headers: headers(),
+            cache: isAdmin ? 'no-store' : 'default'
+        });
+        const json = await res.json();
+        
+        if (!res.ok) return { data: null, error: { message: json.error }, count: 0 };
+
+        let data = json.data;
+        const count = json.count || (Array.isArray(data) ? data.length : (data ? 1 : 0));
+        
+        if (this._single) {
+            data = Array.isArray(data) ? data[0] || null : data;
+        }
+        
+        return { data, error: null, count };
     }
 
     // Lazy action queueing
