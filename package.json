@@ -15,30 +15,30 @@
     "@block65/webcrypto-web-push": "^2.0.0",
     "@cloudflare/workers-types": "^4.20260404.1",
     "@hono/node-server": "^1.13.7",
-    "@studio-freight/lenis": "^1.0.42",
     "@tidbcloud/serverless": "^0.3.0",
+    "@vitejs/plugin-react": "^4.0.3",
+    "autoprefixer": "^10.4.16",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.6",
     "dotenv": "^17.4.0",
     "framer-motion": "^10.16.4",
     "hono": "^4.12.10",
     "jsonwebtoken": "^9.0.3",
+    "lenis": "^1.1.20",
     "lucide-react": "^0.284.0",
     "mysql2": "^3.11.0",
+    "postcss": "^8.4.31",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-player": "^2.13.0",
     "react-router-dom": "^6.16.0",
-    "swiper": "^10.3.1"
+    "swiper": "^10.3.1",
+    "tailwindcss": "^3.3.3",
+    "vite": "^4.4.5"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
-    "@vitejs/plugin-react": "^4.0.3",
-    "autoprefixer": "^10.4.16",
-    "postcss": "^8.4.31",
-    "tailwindcss": "^3.3.3",
-    "vite": "^4.4.5",
     "wrangler": "^3.109.2"
   }
 }
