@@ -8,6 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "start": "node server.js",
+    "test:db": "node scripts/test_hostinger_db.js",
     "deploy": "vite build && npx wrangler pages deploy dist",
     "dev:backend": "npx wrangler pages dev dist"
   },
