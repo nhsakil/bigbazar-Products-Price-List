@@ -229,6 +229,11 @@ app.use('*', async (c, next) => {
   const isAllowed = !origin ||
                    isLocalhost ||
                    isCustomOrigin ||
+                   origin === 'https://onlinebigbazar.com' ||
+                   origin === 'http://onlinebigbazar.com' ||
+                   origin === 'https://www.onlinebigbazar.com' ||
+                   origin === 'http://www.onlinebigbazar.com' ||
+                   origin.endsWith('.onlinebigbazar.com') ||
                    origin === 'https://bigbazarbariarhat.pages.dev' ||
                    origin.endsWith('.bigbazarbariarhat.pages.dev') ||
                    origin === 'https://bigbazarbaraiyarhat.pages.dev' ||

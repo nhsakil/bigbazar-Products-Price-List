@@ -1,11 +1,13 @@
-import { connect } from '@tidbcloud/serverless';
+import { connect as connectTiDB } from '@tidbcloud/serverless';
+
+let mysqlPool = null;
 
 /**
- * Returns a TiDB serverless connection for the given environment.
- * Prefers DATABASE_URL if set; falls back to individual DB_* vars.
+ * Returns a database connection for the given environment.
+ * Supports both Hostinger Native MySQL (via mysql2) and TiDB Cloud Serverless.
  *
  * @param {object} env - Cloudflare env bindings or node process.env
- * @returns {object} TiDB Connection instance
+ * @returns {object} Database Connection instance with .execute(sql, params)
  */
 export const getDb = (env = {}) => {
   const getVar = (key) => {
@@ -15,24 +17,61 @@ export const getDb = (env = {}) => {
   };
 
   const databaseUrl = getVar('DATABASE_URL');
-  if (databaseUrl) {
-    return connect({ url: databaseUrl });
+  const host = getVar('DB_HOST') || 'localhost';
+  const port = parseInt(getVar('DB_PORT') || '3306', 10);
+  const user = getVar('DB_USER') || '';
+  const password = getVar('DB_PASSWORD') || '';
+  const database = getVar('DB_NAME') || 'u935450528_bigbazar';
+
+  // 1. TiDB Cloud Serverless (HTTP Gateway)
+  const isTiDB = (host && host.includes('tidbcloud.com')) || (databaseUrl && databaseUrl.includes('tidbcloud.com'));
+
+  if (isTiDB) {
+    if (databaseUrl) {
+      return connectTiDB({ url: databaseUrl });
+    }
+    const encUser = encodeURIComponent(user);
+    const encPass = encodeURIComponent(password);
+    const url = `mysql://${encUser}:${encPass}@${host}:${port || 4000}/${database}?ssl={"rejectUnauthorized":true}`;
+    return connectTiDB({ url });
   }
 
-  // Fall back to individual vars
-  const user = encodeURIComponent(getVar('DB_USER') || '');
-  const pass = encodeURIComponent(getVar('DB_PASSWORD') || '');
-  const host = getVar('DB_HOST');
-  const port = getVar('DB_PORT') || '4000';
-  const name = getVar('DB_NAME') || 'test';
-
-  if (!host || !user) {
-    const missing = [];
-    if (!host) missing.push('DB_HOST');
-    if (!user) missing.push('DB_USER');
-    throw new Error(`Missing env vars: ${missing.join(', ')}. Set DATABASE_URL or individual DB_* vars in Cloudflare Pages dashboard.`);
+  // 2. Hostinger Native MySQL (Standard TCP connection via mysql2)
+  if (!mysqlPool) {
+    try {
+      // Dynamic require/import for mysql2 in Node.js runtime
+      const mysql = typeof require !== 'undefined' ? require('mysql2/promise') : null;
+      if (mysql) {
+        mysqlPool = mysql.createPool({
+          host: host === 'localhost' ? '127.0.0.1' : host,
+          port: port || 3306,
+          user: user,
+          password: password,
+          database: database,
+          waitForConnections: true,
+          connectionLimit: 10,
+          queueLimit: 0,
+          enableKeepAlive: true,
+          keepAliveInitialDelay: 0,
+        });
+      }
+    } catch (_) {}
   }
 
-  const url = `mysql://${user}:${pass}@${host}:${port}/${name}?ssl={"rejectUnauthorized":true}`;
-  return connect({ url });
+  if (mysqlPool) {
+    return {
+      async execute(sql, params = []) {
+        // Normalize undefined params to null for mysql2
+        const safeParams = (params || []).map(p => p === undefined ? null : p);
+        const [results] = await mysqlPool.execute(sql, safeParams);
+        return results;
+      }
+    };
+  }
+
+  // Fallback if mysql2 is not loaded yet (e.g. Workers or Serverless)
+  const encUser = encodeURIComponent(user);
+  const encPass = encodeURIComponent(password);
+  const url = databaseUrl || `mysql://${encUser}:${encPass}@${host}:${port}/${database}`;
+  return connectTiDB({ url });
 };
