@@ -7,12 +7,14 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "start": "node server.js",
     "deploy": "vite build && npx wrangler pages deploy dist",
     "dev:backend": "npx wrangler pages dev dist"
   },
   "dependencies": {
     "@block65/webcrypto-web-push": "^2.0.0",
     "@cloudflare/workers-types": "^4.20260404.1",
+    "@hono/node-server": "^1.13.7",
     "@studio-freight/lenis": "^1.0.42",
     "@tidbcloud/serverless": "^0.3.0",
     "bcryptjs": "^2.4.3",
@@ -22,6 +24,7 @@
     "hono": "^4.12.10",
     "jsonwebtoken": "^9.0.3",
     "lucide-react": "^0.284.0",
+    "mysql2": "^3.11.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-player": "^2.13.0",
