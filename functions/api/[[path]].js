@@ -361,9 +361,26 @@ app.get('/health', async (c) => {
   try {
     const conn = getDb(c.env);
     const r = await conn.execute('SELECT 1 as ok');
-    return c.json({ status: 'ok', db: !!r[0] });
+    let tables = [];
+    try {
+      const t = await conn.execute('SHOW TABLES');
+      tables = Array.isArray(t) ? t.map(row => Object.values(row)[0]) : [];
+    } catch (_) {}
+
+    return c.json({
+      status: 'ok',
+      database: 'connected',
+      db_response: r[0],
+      tables_count: tables.length,
+      tables: tables
+    });
   } catch (err) {
-    return c.json({ status: 'error', message: err.message }, 500);
+    return c.json({
+      status: 'error',
+      database: 'disconnected',
+      message: err.message,
+      code: err.code || 'UNKNOWN_ERROR'
+    }, 500);
   }
 });
 
