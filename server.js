@@ -22,7 +22,8 @@ app.use('*', async (c, next) => {
   await next();
 });
 
-// Mount all /api/* routes from the main API router
+// Mount API routes under /api (standard for frontend fetch calls) and / (fallback)
+app.route('/api', apiApp);
 app.route('/', apiApp);
 
 // Serve static assets from the dist folder built by Vite
