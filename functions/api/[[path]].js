@@ -167,16 +167,24 @@ app.onError((err, c) => {
   // Log details server-side only
   console.error(err);
   console.error('Environment check:', {
-    has_db_host: !!c.env.DB_HOST,
-    has_db_user: !!c.env.DB_USER,
-    has_db_pass: !!c.env.DB_PASSWORD,
-    has_db_name: !!c.env.DB_NAME,
-    has_db_port: !!c.env.DB_PORT,
-    has_jwt: !!c.env.JWT_SECRET
+    has_database_url: !!c.env?.DATABASE_URL,
+    has_db_host: !!c.env?.DB_HOST,
+    has_jwt: !!c.env?.JWT_SECRET
   });
 
-  return c.json({ 
-    error: 'Internal Server Error'
+  const msg = err?.message || 'Internal Server Error';
+  // Surface config mistakes so admin login can be fixed without guessing
+  if (
+    msg.includes('JWT_SECRET') ||
+    msg.includes('Missing env') ||
+    msg.includes('FATAL')
+  ) {
+    return c.json({ error: msg }, 500);
+  }
+
+  return c.json({
+    error: 'Internal Server Error',
+    detail: msg
   }, 500);
 });
 
@@ -486,66 +494,140 @@ app.post('/auth/register', async (c) => {
 });
 
 app.post('/auth/login', async (c) => {
-  if (!(await checkRateLimitKV(c, 'login', 5, 60000))) {
-    return c.json({ error: 'Too many login attempts. Please try again after a minute.' }, 429);
-  }
+  try {
+    if (!(await checkRateLimitKV(c, 'login', 5, 60000))) {
+      return c.json({ error: 'Too many login attempts. Please try again after a minute.' }, 429);
+    }
 
-  const { email, mobile, password } = await c.req.json();
-  const identifier = email || mobile;
-  if (!identifier || !password) return c.json({ error: 'Identifier and Password are required' }, 400);
+    let body = {};
+    try {
+      body = await c.req.json();
+    } catch {
+      return c.json({ error: 'Invalid JSON body' }, 400);
+    }
 
-  const conn = getDb(c.env);
-  
-  // Resolve JWT secret once — same source used for both sign and verify
-  const jwtSecret = getJwtSecret(c);
+    const { email, mobile, password } = body;
+    const identifier = (email || mobile || '').toString().trim();
+    if (!identifier || !password) {
+      return c.json({ error: 'Identifier and Password are required' }, 400);
+    }
 
-  // Check Admin
-  const adminEmail = (identifier === 'admin' || identifier === 'admin@bigbazar.com') ? 'admin@bigbazar.com' : identifier;
-  const admins = await conn.execute('SELECT * FROM admin_users WHERE email = ? OR email = ?', [adminEmail, identifier]);
-  if (admins.length > 0) {
-    const user = admins[0];
-    const cleanInput = password.trim();
-    const cleanHash = (user.password_hash || '').trim();
+    if (!c.env?.JWT_SECRET && !(typeof process !== 'undefined' && process.env?.JWT_SECRET)) {
+      return c.json({
+        error: 'Server misconfigured: JWT_SECRET is missing in Cloudflare Pages environment variables.'
+      }, 500);
+    }
+    const jwtSecret = getJwtSecret(c);
 
-    const valid = await bcrypt.compare(cleanInput, cleanHash);
+    const conn = getDb(c.env);
+
+    // Check Admin
+    const adminEmail =
+      identifier === 'admin' || identifier === 'admin@bigbazar.com'
+        ? 'admin@bigbazar.com'
+        : identifier;
+    const admins = await conn.execute(
+      'SELECT * FROM admin_users WHERE email = ? OR email = ?',
+      [adminEmail, identifier]
+    );
+    const adminRows = Array.isArray(admins) ? admins : (admins?.rows || []);
+
+    if (adminRows.length > 0) {
+      const user = adminRows[0];
+      const cleanInput = String(password).trim();
+      const cleanHash = String(user.password_hash || user.password || '').trim();
+
+      if (!cleanHash) {
+        return c.json({ error: 'Admin password is not set in database.' }, 500);
+      }
+
+      let valid = false;
+      try {
+        valid = await bcrypt.compare(cleanInput, cleanHash);
+      } catch (bcryptErr) {
+        console.error('bcrypt.compare failed:', bcryptErr);
+        return c.json({
+          error: 'Password hash in database is invalid. Reset admin password_hash (bcrypt).'
+        }, 500);
+      }
+      if (!valid) return c.json({ error: 'Incorrect password. Please try again.' }, 401);
+
+      const token = await jwtSign(
+        { id: user.id, email: user.email, type: 'admin' },
+        jwtSecret,
+        { expiresIn: '30d' }
+      );
+
+      return c.json({
+        session: {
+          access_token: token,
+          user: { id: user.id, name: 'Admin', email: user.email, type: 'admin' }
+        },
+        user: { id: user.id, name: 'Admin', email: user.email, type: 'admin' }
+      });
+    }
+
+    // Check Customer — guard against missing table
+    let customers = [];
+    try {
+      const customerRes = await conn.execute(
+        'SELECT * FROM customers WHERE email = ? OR mobile = ?',
+        [identifier, identifier]
+      );
+      customers = Array.isArray(customerRes) ? customerRes : (customerRes?.rows || []);
+    } catch (dbErr) {
+      if (
+        dbErr.message?.includes("doesn't exist") ||
+        dbErr.message?.includes('Table')
+      ) {
+        return c.json({ error: 'No account found with this email or mobile.' }, 401);
+      }
+      throw dbErr;
+    }
+    if (customers.length === 0) {
+      return c.json({ error: 'No account found with this email or mobile.' }, 401);
+    }
+
+    const user = customers[0];
+    const customerHash = String(user.password_hash || '').trim();
+    if (!customerHash) {
+      return c.json({ error: 'Incorrect password. Please try again.' }, 401);
+    }
+
+    let valid = false;
+    try {
+      valid = await bcrypt.compare(String(password), customerHash);
+    } catch {
+      return c.json({ error: 'Incorrect password. Please try again.' }, 401);
+    }
     if (!valid) return c.json({ error: 'Incorrect password. Please try again.' }, 401);
 
     const token = await jwtSign(
-      { id: user.id, email: user.email, type: 'admin' },
+      { id: user.id, mobile: user.mobile, type: 'customer' },
       jwtSecret,
       { expiresIn: '30d' }
     );
-    
     return c.json({
-      session: { 
-        access_token: token, 
-        user: { id: user.id, name: 'Admin', email: user.email, type: 'admin' } 
+      session: {
+        access_token: token,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          mobile: user.mobile
+        }
       },
-      user: { id: user.id, name: 'Admin', email: user.email, type: 'admin' }
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        mobile: user.mobile
+      }
     });
+  } catch (err) {
+    console.error('Login error:', err);
+    return c.json({ error: err.message || 'Login failed' }, 500);
   }
-
-  // Check Customer — guard against missing table (customers table may not be created yet)
-  let customers = [];
-  try {
-    customers = await conn.execute('SELECT * FROM customers WHERE email = ? OR mobile = ?', [identifier, identifier]);
-  } catch (dbErr) {
-    if (dbErr.message.includes("doesn't exist") || dbErr.message.includes('Table')) {
-      return c.json({ error: 'No account found with this email or mobile.' }, 401);
-    }
-    throw dbErr; // re-throw unexpected DB errors
-  }
-  if (customers.length === 0) return c.json({ error: 'No account found with this email or mobile.' }, 401);
-
-  const user = customers[0];
-  const valid = await bcrypt.compare(password, user.password_hash);
-  if (!valid) return c.json({ error: 'Incorrect password. Please try again.' }, 401);
-
-  const token = await jwtSign({ id: user.id, mobile: user.mobile, type: 'customer' }, jwtSecret, { expiresIn: '30d' });
-  return c.json({
-    session: { access_token: token, user: { id: user.id, name: user.name, email: user.email, mobile: user.mobile } },
-    user: { id: user.id, name: user.name, email: user.email, mobile: user.mobile }
-  });
 });
 
 app.get('/auth/session', requireAuth, async (c) => {
