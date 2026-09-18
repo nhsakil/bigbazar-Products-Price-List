@@ -16,6 +16,12 @@ const distPath = path.join(__dirname, 'dist');
 
 const app = new Hono();
 
+// Inject Hostinger / Node.js environment variables into Hono context
+app.use('*', async (c, next) => {
+  c.env = { ...(c.env || {}), ...process.env };
+  await next();
+});
+
 // Mount all /api/* routes from the main API router
 app.route('/', apiApp);
 

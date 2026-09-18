@@ -201,6 +201,11 @@ app.onError((err, c) => {
 // Middleware
 // ============================================
 app.use('*', async (c, next) => {
+  // Merge Node.js / Hostinger environment variables into c.env
+  if (typeof process !== 'undefined' && process.env) {
+    c.env = { ...(c.env || {}), ...process.env };
+  }
+
   const origin = c.req.header('origin');
   // Exact localhost / 127.0.0.1 only — never substring match (blocks evil-localhost.com)
   let isLocalhost = false;
