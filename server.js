@@ -66,3 +66,5 @@ serve({
   port,
   hostname: host,
 });
+
+export default app;

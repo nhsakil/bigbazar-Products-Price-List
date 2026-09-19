@@ -1,0 +1,30 @@
+name: Sync to Downstream Repository
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    tags:
+      - '*'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Full git history for clean mirroring
+
+      - name: Push to Downstream Repository
+        env:
+          DOWNSTREAM_REPO: ${{ secrets.DOWNSTREAM_REPO_URL }} # e.g. https://x-access-token:ghp_xxx@github.com/other-user/repo.git
+        run: |
+          if [ -z "$DOWNSTREAM_REPO" ]; then
+            echo "❌ ERROR: DOWNSTREAM_REPO_URL secret is not set."
+            exit 1
+          fi
+          echo "🚀 Syncing commits to downstream repository..."
+          git push --force --prune "$DOWNSTREAM_REPO" +refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*
+          echo "✅ Successfully synced to downstream repository!"
